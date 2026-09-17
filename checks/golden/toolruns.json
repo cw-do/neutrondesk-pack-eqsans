@@ -1,0 +1,301 @@
+[
+  {
+    "args": {
+      "config_name": "4m 2.5a"
+    },
+    "content": "Configuration: conf_4000mm_2p5A_60Hz_scatt\nWLMin: 2.5000\nWLMax: 6.1383\nQMin: 0.0077\nQMaxEdge: 0.3296\nQMaxCorner: 0.4632\nTOFMin: 11452.1243\nTOFMax: 28118.7910\nQMinPractical: 0.0110\nBeamDia: 44.6363",
+    "id": "qrange-label",
+    "ok": true,
+    "tool": "qrange_lookup"
+  },
+  {
+    "args": {
+      "config_name": "conf_4000mm_1p5A_30Hz"
+    },
+    "content": "Configuration: conf_4000mm_1p5A_30Hz_scatt\nWLMin: 1.5000\nWLMax: 5.1383\nQMin: 0.0092\nQMaxEdge: 0.5493\nQMaxCorner: 0.7720\nWL2Min: 8.7767\nWL2Max: 12.4150\nQMin2: 0.0038\nQMax2Edge: 0.0939\nQMax2Corner: 0.1319\nTOFMin: 6871.2746\nTOFMax: 40204.6079\nQMinPractical: 0.0052\nBeamDia: 44.6363",
+    "id": "qrange-30hz",
+    "ok": true,
+    "tool": "qrange_lookup"
+  },
+  {
+    "args": {
+      "config_name": "nonsense"
+    },
+    "content": "No configuration named \"nonsense\". Call list_qrange_configs to see the 56 available names.",
+    "id": "qrange-unknown",
+    "ok": false,
+    "tool": "qrange_lookup"
+  },
+  {
+    "args": {},
+    "content": "band_testing\nconf_1300mm_0p5A_60Hz_diff\nconf_1300mm_0p5A_60Hz\nconf_1300mm_1p0A_60Hz_1mm\nconf_1300mm_1p0A_60Hz_gis\nconf_1300mm_1p0A_60Hz\nconf_1300mm_2p0A_60Hz\nconf_1300mm_2p5A_60Hz_3mm\nconf_1300mm_2p5A_60Hz\nconf_1300mm_4p0A_60Hz\nconf_1300mm_8p0A_60Hz-\nconf_2500mm_0p5A_60Hz_1mm\nconf_2500mm_0p5A_60Hz\nconf_2500mm_10p0A_60Hz\nconf_2500mm_1p5A_60Hz\nconf_2500mm_2p5A_30Hz\nconf_2500mm_2p5A_60Hz_1mm\nconf_2500mm_2p5A_60Hz_5mm\nconf_2500mm_2p5A_60Hz_gis\nconf_2500mm_2p5A_60Hz\nconf_2500mm_5p0A_60Hz\nconf_4000mm_10p0A_60Hz_1mm\nconf_4000mm_10p0A_60Hz\nconf_4000mm_12p0A_60Hz\nconf_4000mm_1p5A_30Hz\nconf_4000mm_2p5A_30Hz\nconf_4000mm_2p5A_60Hz_003dl\nconf_4000mm_2p5A_60Hz_005dl\nconf_4000mm_2p5A_60Hz_1mm\nconf_4000mm_2p5A_60Hz_3mm\nconf_4000mm_2p5A_60Hz_5mm\nconf_4000mm_2p5A_60Hz_gis\nconf_4000mm_2p5A_60Hz\nconf_4000mm_4p0A_60Hz\nconf_4000mm_5p5A_60Hz_gis\nconf_4000mm_6p0A_60Hz\nconf_4000mm_7p0A_60Hz\nconf_4000mm_8p5A_60Hz_gis2\nconf_4000mm_8p5A_60Hz_gis\nconf_4m_2p5A_sp03\nconf_4m_2p5A_sp15\nconf_8000mm_10p0A_60Hz_3mm\nconf_8000mm_10p0A_60Hz_3mmsa\nconf_8000mm_10p0A_60Hz_5mm\nconf_8000mm_10p0A_60Hz\nconf_8000mm_12p0A_60Hz\nconf_8000mm_2p5A_60Hz\nconf_8000mm_5p0A_60Hz\nconf_8000mm_6p0A_60Hz\nconf_8500mm_15p0A_60Hz\nconf_8500mm_7p0A_60Hz\nconf_9000mm_15p0A_60Hz\nconf_9000mm_2p5A_60Hz\nconf_9000mm_6p0A_60Hz\nconf_9000mm_7p0A_60Hz\nmono_testing",
+    "id": "list-configs",
+    "ok": true,
+    "tool": "list_qrange_configs"
+  },
+  {
+    "args": {},
+    "content": "beamslit1\nbeamslit2\nbeamslit3\nbeamslit4\nbeamstopX\nbeamstopY30\nbeamstopY60\nbeamstopY90\nchopperfreq\ncloseShutter\ndelay\nestimatetime\nestimatetimefs\nestimatetimeold\ngetfuncname\nloadconf\nmaghscanup\nmovebeamslit1\nmovedetector\nmovemask\nmoveroth\nmovetransx\nmovetransz\nnewscan\nopenShutter\noutletswitch\npsylo_compression_step\npsylo_rotccw\npsylo_rotcw\npsylo_stop\npsylo_tension_step\npump_run\npump_stop\nreadpv\nreducescanrate_peltier\nresettime\nrheotrigger\nrotate_cryob\nrotate_gi_phi\nrotate_gi_psi\nrotate_gi_theta\nrr_load\nrr_unload\nruncryostat\nrunfurnace\nrunfurnaceid\nrunrobotid\nrunrobotid2\nrunsample\nrunsampleid\nrunteledynepump\nsc_setcycle\nsc_setmanual\nsc_setspeed\nsc_stop\nset_amp_wait\nset_Channel1\nset_Channel2\nset_chopper_delay\nset_choppers_auto\nset_cryostat_sample\nset_cryostat_sample_wait\nset_cryostat_vti\nset_cryostat_vti_wait\nset_field\nset_field_wait\nset_freq_wait\nset_furnace_ramprate\nset_furnace_temp\nset_light_arroyoTemp\nset_light_current\nset_light_voltage\nset_monoWavelength\nset_polysci_temp\nset_pressure\nset_pressureRate\nset_tensileg_gap\nset_tensileg_move\nset_valveOpening\nset_wavelength_spread\nsetfurnacetemp\nsethaaketemp\nsethtfurnacetemp\nsetipts\nsetitems\nsetnano1\nsetnano1\nsetnano2\nsetnano2\nsetpeltier1temp\nsetpeltier1temp_mod\nsetpeltier2temp\nsetpeltier2temp_mod\nsetpv\nsetrobottemp\nsetruntitle\nsetteledynepressure\nsettumblertemp\nsetWL\nsimulatethis\nstart\nstop\nstopteledynepump\nsubmit\nsubmitsmart\ntumbler\nwaitPC",
+    "id": "list-functions",
+    "ok": true,
+    "tool": "list_scan_functions"
+  },
+  {
+    "args": {
+      "query": "runsampleid"
+    },
+    "content": "def runsampleid(title, sampleid,  racktype, timetype, pos, limit):\n    global pctotal, timetotal\n    scantitle = 'runsample('+title + ', ' + str(sampleid) + ', ' + racktype + ', ' + timetype + ', ' + str(pos) + ', ' + str(limit) + ')'\n    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) \n    \n    cmds.append(Set('BL6:SMS:RunInfo:RunTitle', title))\n    cmds.append(Set('BL6:CS:ITEMS', sampleid))\n\n    if racktype == 'tumbler':\n        print(\"...Set tumbler for transX\")\n        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 1, completion=True))\n    elif racktype == 'banjo':\n        print(\"...Set banjo for transX\")\n        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 2, completion=True))\n    elif racktype == 'peltier':\n        print(\"...Set peltier for transX\")\n        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 3, completion=True))\n    elif racktype == 'ti':\n        print(\"...Set ti rack for transX\")\n        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 4, completion=True))\n    elif racktype == 'humid':\n        print(\"...Set humidity cell for transX\")\n        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 5, completion=True))\n    elif racktype == 'furnace12':\t\n        print(\"...Set 12-pos furnace position for transX\")\n        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 6, completion=True))    \n    else: \n        raise Exception(\"unknown sample environment type\")        \n    if pos > 0 :\n        cmds.append(Set('BL6:Mot:SampleTable:Menu', pos, completion=True))\n    cmds.append(Set('BL6:CS:RunControl:Start', 1, completion=True))\n\n    if timetype == 'pc' or timetype == 'PC':\n        cmds.append(Wait('BL6:Det:PCharge:C', limit, comparison='increase by'))\n        pctotal = pctotal + limit\n    elif timetype.lower() == 'time':\n        cmds.append(Wait('BL6:Det:N1:AcquireTimer_RBV', limit, comparison = 'increase by'))\n        timetotal = timetotal + limit\n\n    else:\n        raise Exception(\"unknown time type\")   \n    cmds.append(Set('BL6:CS:RunControl:Stop', 1, completion=True))\n\n    id = submitsmart(cmds, scantitle)\n    print(scantitle)\n    newscan()",
+    "id": "lookup-exact",
+    "ok": true,
+    "tool": "lookup_scan_function"
+  },
+  {
+    "args": {
+      "query": "peltier"
+    },
+    "content": "# reducescanrate_peltier\ndef reducescanrate_peltier():\n    import epics\n\n    # Define the PVs and their respective scan rates\n    commands = [\n        (\"BL6:SE:QNTC1:ReadMaxStirrerSpeed.SCAN\", \"Passive\"),\n        (\"BL6:SE:QNTC2:ReadMaxStirrerSpeed.SCAN\", \"Passive\"),\n        (\"BL6:SE:QNTC1:ReadLowestStirrerSpeed.SCAN\", \"Passive\"),\n        (\"BL6:SE:QNTC2:ReadLowestStirrerSpeed.SCAN\", \"Passive\"),\n        (\"BL6:SE:QNTC1:ReadHolderID.SCAN\", \"Passive\"),\n        (\"BL6:SE:QNTC2:ReadHolderID.SCAN\", \"Passive\"),\n        (\"BL6:SE:QNTC1:ReadStirrerSpeed.SCAN\", \"Passive\"),\n        (\"BL6:SE:QNTC2:ReadStirrerSpeed.SCAN\", \"Passive\"),\n        (\"BL6:SE:QNTC1:ReadMaxTargetTemp.SCAN\", \"5 second\"),\n        (\"BL6:SE:QNTC2:ReadMaxTargetTemp.SCAN\", \"5 second\"),\n        (\"BL6:SE:QNTC1:ReadLowestTargetTemp.SCAN\", \"5 second\"),\n        (\"BL6:SE:QNTC2:ReadLowestTargetTemp.SCAN\", \"5 second\"),\n        (\"BL6:SE:QNTC1:ReadInstrumentStatus.SCAN\", \"5 second\"),\n        (\"BL6:SE:QNTC2:ReadInstrumentStatus.SCAN\", \"5 second\"),\n        (\"BL6:SE:QNTC1:ReadTempHolder.SCAN\", \"2 second\"),\n        (\"BL6:SE:QNTC2:ReadTempHolder.SCAN\", \"2 second\"),\n        (\"BL6:SE:QNTC1:ReadProbeTemperature.SCAN\", \"2 second\"),\n        (\"BL6:SE:QNTC2:ReadProbeTemperature.SCAN\", \"2 second\"),\n        (\"BL6:SE:QNTC1:ReadRampRate.SCAN\", \"5 second\"),\n        (\"BL6:SE:QNTC2:ReadRampRate.SCAN\", \"5 second\"),\n        (\"BL6:SE:QNTC1:ReadHighTempLimHeatExch.SCAN\", \"2 second\"),\n        (\"BL6:SE:QNTC2:ReadHighTempLimHeatExch.SCAN\", \"2 second\"),\n        (\"BL6:SE:QNTC1:ReadHeatExchTemp.SCAN\", \"2 second\"),\n        (\"BL6:SE:QNTC2:ReadHeatExchTemp.SCAN\", \"2 second\"),\n    ]\n\n    # Loop over the commands and set each PV to the specified scan rate\n    for pv, scan_rate in commands:\n        result = epics.caput(pv, scan_rate)\n        if result:\n            print(f\"Successfully set {pv} to {scan_rate}\")\n        else:\n            print(f\"Failed to set {pv} to {scan_rate}\")\n\n# setpeltier1temp\ndef setpeltier1temp(value):\n    scantitle = 'setpeltier1temp('+str(value) + ')'\n    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) \n    cmds.append(Set('BL6:SE:QNTC1:WriteTargetTemp', value, completion = True))\n    cmds.append(Delay(1))\n    cmds.append(Set('BL6:SE:QNTC1:WriteTargetTemp', value, completion = True))\n    cmds.append(Delay(1))\n    cmds.append(Set('BL6:SE:QNTC1:WriteTargetTemp', value, completion = True))    \n    id = submitsmart(cmds, scantitle)\n    print(scantitle)\n    newscan()\n\n# setpeltier1temp_mod\ndef setpeltier1temp_mod(value):\n    scantitle = 'setpeltier1temp_mod('+str(value) + ')'\n    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) \n    #cmds.append(Set('BL6:SE:QNTC1:WriteTargetTemp', value, completion = True, readback=True, tolerance=0.2))\n    cmds.append(Set('BL6:SE:QNTC1:SP1Set', value))\n    id = submitsmart(cmds, scantitle)\n    #while caget('BL6:SE:QNTC1:WriteTargetTemp') != caget('BL6:SE:QNTC1:ReadTargetTemp'):\n    #    id = submitsmart(cmds, scantitle)\n    print(scantitle)\n    newscan()\n\n# setpeltier2temp\ndef setpeltier2temp(value):\n    scantitle = 'setpeltier2temp('+str(value) + ')'\n    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) \n    cmds.append(Set('BL6:SE:QNTC2:WriteTargetTemp', value, completion = True))\n    cmds.append(Delay(1))   \n    cmds.append(Set('BL6:SE:QNTC2:WriteTargetTemp', value, completion = True))  \n    cmds.append(Delay(1))   \n    cmds.append(Set('BL6:SE:QNTC2:WriteTargetTemp', value, completion = True))          \n    id = submitsmart(cmds, scantitle)\n    print(scantitle)\n    newscan()\n\n# setpeltier2temp_mod\ndef setpeltier2temp_mod(value):\n    scantitle = 'setpeltier2temp_mod('+str(value) + ')'\n    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) \n    #cmds.append(Set('BL6:SE:QNTC2:WriteTargetTemp', value, completion = True, readback=True, tolerance=0.2))\n    cmds.append(Set('BL6:SE:QNTC2:SP1Set', value))\n    id = submitsmart(cmds, scantitle)\n    #while caget('BL6:SE:QNTC2:WriteTargetTemp') != caget('BL6:SE:QNTC2:ReadTargetTemp'):\n    #    id = submitsmart(cmds, scantitle)\n    print(scantitle)\n    newscan()",
+    "id": "lookup-keyword",
+    "ok": true,
+    "tool": "lookup_scan_function"
+  },
+  {
+    "args": {
+      "query": "robot"
+    },
+    "content": "# runrobotid\ndef runrobotid(title, sampleid,  timetype, pos, limit):\n    # DONOT USE THIS FUNCTION\n    # THIS FUNCTION will be DELETED. 8/25/25\n    global pctotal, timetotal\n    scantitle = 'runrobotid('+title + ', ' + str(sampleid) + ', '  + timetype + ', ' + str(pos) + ', ' + str(limit) + ')'\n    \n    #CHECK existing call back value. \n    # if not 0,\n    # return it first.\n    # if 0, (assume sample not in the beam), proceed\n    Set('BL6:SE:UR:CassetteNumber', 1, completion=True)\n    If('BL6:SE:UR:SampleNumCB', '>', 0, [ Set('BL6:SE:UR:SampleNumCB', 0, completion=True) ])\n    Submit(name='Check sample in beam then return')\n    If('BL6:SE:UR:State', '=', 4, [Set('BL6:SE:UR:ClearError', 1)])\n    Submit(name='check error')\n    If('BL6:SE:UR:SampleNumCB', '=', 0, [Set('BL6:CS:LineLog:Add', 'CB = 0, proceeding.' , completion=True) ]) \n    Submit(name='Check sample in beam')\n    \n    #load cell\n    # maybe add a check routine if the current value is not 0? then user need to double check.\n    Set('BL6:SE:UR:SampleNumCB', pos, completion=True)\n    Set('BL6:CS:LineLog:Add', 'robot picks up from position ' + str(pos) )\n    Submit(name='Robot picks up sample from ' + str(pos))\n    \n    SetLog('log.setting runtitle','BL6:SMS:RunInfo:RunTitle', title)\n    SetLog('log.setting items number','BL6:CS:ITEMS', sampleid, completion = True)\n    #Delay(1) #for testing\n    \n    if timetype.lower() == 'pc' :\n        Run(title, wait_pcharge_C=limit)\n        pctotal = pctotal + limit\n    elif timetype.lower() == 'time':\n        Run(title, wait_seconds=limit)\n        timetotal = timetotal + limit\n    elif timetype.lower() == 'delay':\n        Delay(limit)\n    elif timetype.lower() == 'dummy':\n        Run('NotSaving'+title, wait_seconds=0)\n        Delay(limit)\n            \n    Set('BL6:CS:LineLog:Add', scantitle )\n    Submit(name=scantitle)\n    \n    #unload cell\n    Set('BL6:SE:UR:SampleNumCB', 0, completion=True)\n    Set('BL6:CS:LineLog:Add', 'robot returns from beam' )\n    Submit(name='returns sample to pos ' + str(pos))\n    print(scantitle)\n\n# runrobotid2\ndef runrobotid2(title, sampleid,  timetype, pos, limit):\n    global pctotal, timetotal\n    scantitle = 'runrobotid('+title + ', ' + str(sampleid) + ', '  + timetype + ', ' + str(pos) + ', ' + str(limit) + ')'\n    \n\n    # load cell\n    jobtitle = 'Loading sample pos '+str(pos)\n    cmds.append(Set('BL6:SE:UR:CassetteNumber', 1, completion=True))\n    cmds.append(Set('BL6:SE:UR:SampleNumber', pos, completion=True))\n    cmds.append(Set('BL6:SE:UR:PlaceSample', 1, completion=True))    \n    cmds.append(Set('BL6:CS:LineLog:Add', 'Loading sample pos '+str(pos) ))\n    id = submitsmart(cmds, jobtitle)\n    newscan()\n    # Set info    \n\n    cmds.append(Set('BL6:SMS:RunInfo:RunTitle', title, completion=True))\n    cmds.append(Set('BL6:CS:ITEMS', sampleid, completion=True))\n    # collect neutron\n    cmds.append(Set('BL6:CS:RunControl:Start', 1, completion=True))\n    if timetype == 'pc' or timetype == 'PC':\n        cmds.append(Wait('BL6:Det:PCharge:C', limit, comparison='increase by'))\n        pctotal = pctotal + limit\n    elif timetype.lower() == 'time':\n        cmds.append(Wait('BL6:Det:N1:AcquireTimer_RBV', limit, comparison = 'increase by'))\n        timetotal = timetotal + limit\n    else:\n        raise Exception(\"unknown time type\")   \n    cmds.append(Set('BL6:CS:RunControl:Stop', 1, completion=True))\n    cmds.append(Set('BL6:CS:LineLog:Add', scantitle))\n    id = submitsmart(cmds, scantitle)\n    newscan()\n    \n    # unload cell\n    jobtitle = 'Unloading sample pos '+str(pos)\n    cmds.append(Set('BL6:SE:UR:CassetteNumber', 1, completion=True))\n    cmds.append(Set('BL6:SE:UR:SampleNumber', pos, completion=True))\n    cmds.append(Set('BL6:SE:UR:ReturnSample', 1, completion=True))    \n    cmds.append(Set('BL6:CS:LineLog:Add', 'Unloading sample to pos '+str(pos) ))\n    id = submitsmart(cmds, jobtitle)\n    print(scantitle)\n    newscan()\n\n\n# added 10/31/17 - William Heller and Chris Stanley.  Happy Halloween, Changwoo!\n\n# setrobottemp\ndef setrobottemp(value):\n    scantitle = 'setrobottemp('+str(value) + ')'\n    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) \n    cmds.append(Set('BL6:SE:ARR:SetPoint', value, completion = True, readback=True, tolerance=0.2))\n    id = submitsmart(cmds, scantitle)\n    #while caget('BL6:SE:QNTC2:WriteTargetTemp') != caget('BL6:SE:QNTC2:ReadTargetTemp'):\n    #    id = submitsmart(cmds, scantitle)\n    print(scantitle)\n    newscan()",
+    "id": "lookup-robot",
+    "ok": true,
+    "tool": "lookup_scan_function"
+  },
+  {
+    "args": {
+      "query": "zzzqqq"
+    },
+    "content": "No scan function matches \"zzzqqq\". Call list_scan_functions to see all 107 names.",
+    "id": "lookup-none",
+    "ok": false,
+    "tool": "lookup_scan_function"
+  },
+  {
+    "args": {
+      "configs": [
+        "4m 2.5a"
+      ],
+      "ipts": 37902,
+      "samples": [
+        {
+          "items": 0,
+          "name": "sampleA",
+          "pos": 2,
+          "rack": "peltier"
+        }
+      ]
+    },
+    "content": "from epics import caget\nfrom scan import *\nimport os\nimport sys\nsys.path.append('/home/controls/var/tmp/scripting/dev/')\nfrom eqsans_scanfunctions_live import *\n\nsetipts(37902)\n\n# Transmission 4m 2.5a\nloadconf('conf_4000mm_2p5A_60Hz_trans')\nopenShutter()\nrunsampleid('T-emptybeam 4m 2.5a', 0, 'peltier', 'pc', 1, 0.15)\nrunsampleid('T-sampleA 4m 2.5a', 0, 'peltier', 'pc', 2, 0.15)\ncloseShutter()\n\n# Scattering 4m 2.5a\nloadconf('conf_4000mm_2p5A_60Hz_scatt')\nopenShutter()\nrunsampleid('S-sampleA 4m 2.5a', 0, 'peltier', 'pc', 2, 1.0)\ncloseShutter()\n",
+    "id": "sample-basic",
+    "ok": true,
+    "tool": "build_sample_script"
+  },
+  {
+    "args": {
+      "configs": [
+        "4m 2.5a",
+        "8m 12a 30hz"
+      ],
+      "ipts": 99999,
+      "samples": [
+        {
+          "items": 0,
+          "name": "s1",
+          "pos": 2,
+          "rack": "peltier"
+        },
+        {
+          "items": 0,
+          "name": "s2",
+          "pos": 3,
+          "rack": "peltier"
+        }
+      ]
+    },
+    "content": "from epics import caget\nfrom scan import *\nimport os\nimport sys\nsys.path.append('/home/controls/var/tmp/scripting/dev/')\nfrom eqsans_scanfunctions_live import *\n\nsetipts(99999)\n\n# Transmission 4m 2.5a\nloadconf('conf_4000mm_2p5A_60Hz_trans')\nopenShutter()\nrunsampleid('T-emptybeam 4m 2.5a', 0, 'peltier', 'pc', 1, 0.15)\nrunsampleid('T-s1 4m 2.5a', 0, 'peltier', 'pc', 2, 0.15)\nrunsampleid('T-s2 4m 2.5a', 0, 'peltier', 'pc', 3, 0.15)\ncloseShutter()\n\n# Scattering 4m 2.5a\nloadconf('conf_4000mm_2p5A_60Hz_scatt')\nopenShutter()\nrunsampleid('S-s1 4m 2.5a', 0, 'peltier', 'pc', 2, 1.0)\nrunsampleid('S-s2 4m 2.5a', 0, 'peltier', 'pc', 3, 1.0)\ncloseShutter()\n\n# Transmission 8m 12a\nloadconf('conf_8000mm_12A_30Hz_trans')\nopenShutter()\nrunsampleid('T-emptybeam 8m 12a', 0, 'peltier', 'pc', 1, 0.15)\nrunsampleid('T-s1 8m 12a', 0, 'peltier', 'pc', 2, 0.15)\nrunsampleid('T-s2 8m 12a', 0, 'peltier', 'pc', 3, 0.15)\ncloseShutter()\n\n# Scattering 8m 12a\nloadconf('conf_8000mm_12A_30Hz_scatt')\nopenShutter()\nrunsampleid('S-s1 8m 12a', 0, 'peltier', 'pc', 2, 1.0)\nrunsampleid('S-s2 8m 12a', 0, 'peltier', 'pc', 3, 1.0)\ncloseShutter()\n",
+    "id": "sample-two-configs",
+    "ok": true,
+    "tool": "build_sample_script"
+  },
+  {
+    "args": {
+      "configs": [
+        "4m 2.5a",
+        "8m 12a 30hz"
+      ],
+      "configs_without_empty_beam": [
+        "4m 2.5a"
+      ],
+      "ipts": 99999,
+      "samples": [
+        {
+          "items": 0,
+          "name": "s1",
+          "pos": 2,
+          "rack": "peltier"
+        },
+        {
+          "items": 0,
+          "name": "s2",
+          "pos": 3,
+          "rack": "peltier"
+        }
+      ]
+    },
+    "content": "from epics import caget\nfrom scan import *\nimport os\nimport sys\nsys.path.append('/home/controls/var/tmp/scripting/dev/')\nfrom eqsans_scanfunctions_live import *\n\nsetipts(99999)\n\n# Transmission 4m 2.5a\nloadconf('conf_4000mm_2p5A_60Hz_trans')\nopenShutter()\nrunsampleid('T-s1 4m 2.5a', 0, 'peltier', 'pc', 2, 0.15)\nrunsampleid('T-s2 4m 2.5a', 0, 'peltier', 'pc', 3, 0.15)\ncloseShutter()\n\n# Scattering 4m 2.5a\nloadconf('conf_4000mm_2p5A_60Hz_scatt')\nopenShutter()\nrunsampleid('S-s1 4m 2.5a', 0, 'peltier', 'pc', 2, 1.0)\nrunsampleid('S-s2 4m 2.5a', 0, 'peltier', 'pc', 3, 1.0)\ncloseShutter()\n\n# Transmission 8m 12a\nloadconf('conf_8000mm_12A_30Hz_trans')\nopenShutter()\nrunsampleid('T-emptybeam 8m 12a', 0, 'peltier', 'pc', 1, 0.15)\nrunsampleid('T-s1 8m 12a', 0, 'peltier', 'pc', 2, 0.15)\nrunsampleid('T-s2 8m 12a', 0, 'peltier', 'pc', 3, 0.15)\ncloseShutter()\n\n# Scattering 8m 12a\nloadconf('conf_8000mm_12A_30Hz_scatt')\nopenShutter()\nrunsampleid('S-s1 8m 12a', 0, 'peltier', 'pc', 2, 1.0)\nrunsampleid('S-s2 8m 12a', 0, 'peltier', 'pc', 3, 1.0)\ncloseShutter()\n",
+    "id": "sample-skip-eb",
+    "ok": true,
+    "tool": "build_sample_script"
+  },
+  {
+    "args": {
+      "configs": [
+        "4m 2.5a"
+      ],
+      "ipts": 1,
+      "samples": [
+        {
+          "items": 0,
+          "name": "s1",
+          "pos": 2,
+          "rack": "banjo",
+          "trans": false
+        }
+      ]
+    },
+    "content": "from epics import caget\nfrom scan import *\nimport os\nimport sys\nsys.path.append('/home/controls/var/tmp/scripting/dev/')\nfrom eqsans_scanfunctions_live import *\n\nsetipts(1)\n\n# Scattering 4m 2.5a\nloadconf('conf_4000mm_2p5A_60Hz_scatt')\nopenShutter()\nrunsampleid('S-s1 4m 2.5a', 0, 'banjo', 'pc', 2, 1.0)\ncloseShutter()\n",
+    "id": "sample-scatt-only",
+    "ok": true,
+    "tool": "build_sample_script"
+  },
+  {
+    "args": {
+      "configs": [
+        "1.3m 0.5a"
+      ],
+      "ipts": 1,
+      "samples": [
+        {
+          "items": 7,
+          "name": "s1",
+          "pos": 4,
+          "rack": "ti"
+        }
+      ],
+      "scatt_limit": 2,
+      "trans_limit": 0.2
+    },
+    "content": "from epics import caget\nfrom scan import *\nimport os\nimport sys\nsys.path.append('/home/controls/var/tmp/scripting/dev/')\nfrom eqsans_scanfunctions_live import *\n\nsetipts(1)\n\n# Transmission 1.3m 0.5a\nloadconf('conf_1300mm_0p5A_60Hz_trans')\nopenShutter()\nrunsampleid('T-emptybeam 1.3m 0.5a', 0, 'ti', 'pc', 1, 0.2)\nrunsampleid('T-s1 1.3m 0.5a', 7, 'ti', 'pc', 4, 0.2)\ncloseShutter()\n\n# Scattering 1.3m 0.5a\nloadconf('conf_1300mm_0p5A_60Hz_scatt')\nopenShutter()\nrunsampleid('S-s1 1.3m 0.5a', 7, 'ti', 'pc', 4, 2.0)\ncloseShutter()\n",
+    "id": "sample-limits",
+    "ok": true,
+    "tool": "build_sample_script"
+  },
+  {
+    "args": {
+      "configs": [
+        "4m 2.5a"
+      ],
+      "ipts": 1,
+      "samples": [
+        {
+          "items": 0,
+          "name": "s1",
+          "pos": 1,
+          "rack": "peltier"
+        }
+      ]
+    },
+    "content": "from epics import caget\nfrom scan import *\nimport os\nimport sys\nsys.path.append('/home/controls/var/tmp/scripting/dev/')\nfrom eqsans_scanfunctions_live import *\n\nsetipts(1)\n\n# Transmission 4m 2.5a\nloadconf('conf_4000mm_2p5A_60Hz_trans')\nopenShutter()\nrunsampleid('T-emptybeam 4m 2.5a', 0, 'peltier', 'pc', 2, 0.15)\nrunsampleid('T-s1 4m 2.5a', 0, 'peltier', 'pc', 1, 0.15)\ncloseShutter()\n\n# Scattering 4m 2.5a\nloadconf('conf_4000mm_2p5A_60Hz_scatt')\nopenShutter()\nrunsampleid('S-s1 4m 2.5a', 0, 'peltier', 'pc', 1, 1.0)\ncloseShutter()\n",
+    "id": "sample-pos1-taken",
+    "ok": true,
+    "tool": "build_sample_script"
+  },
+  {
+    "args": {
+      "configs": [
+        "4m 2.5a"
+      ],
+      "ipts": 1,
+      "samples": [
+        {
+          "items": 0,
+          "name": "s",
+          "pos": 2,
+          "rack": "peltier"
+        }
+      ],
+      "temps": [
+        20,
+        90
+      ]
+    },
+    "content": "from epics import caget\nfrom scan import *\nimport os\nimport sys\nsys.path.append('/home/controls/var/tmp/scripting/dev/')\nfrom eqsans_scanfunctions_live import *\n\nsetipts(1)\n\n# Temperature series (4m 2.5a), control: peltier1, peltier2\ntemp_list = [20, 90]\ntrans_temps = []\n\nfor T in temp_list:\n    if T >= 80:\n        set_polysci_temp(60)\n    setpeltier1temp(T)\n    setpeltier2temp(T)\n    delay(600)\n\n    # 4m 2.5a\n    if T in trans_temps:\n        loadconf('conf_4000mm_2p5A_60Hz_trans')\n        openShutter()\n        runsampleid(f'T-s 4m 2.5a {T}C', 0, 'peltier', 'pc', 2, 0.15)\n        closeShutter()\n    loadconf('conf_4000mm_2p5A_60Hz_scatt')\n    openShutter()\n    runsampleid(f'S-s 4m 2.5a {T}C', 0, 'peltier', 'pc', 2, 1.0)\n    closeShutter()\n",
+    "id": "temp-basic",
+    "ok": true,
+    "tool": "build_temperature_script"
+  },
+  {
+    "args": {
+      "configs": [
+        "4m 2.5a"
+      ],
+      "controls": [
+        "polysci"
+      ],
+      "ipts": 1,
+      "samples": [
+        {
+          "items": 0,
+          "name": "s",
+          "pos": 2,
+          "rack": "peltier"
+        }
+      ],
+      "temps": [
+        20,
+        90
+      ]
+    },
+    "content": "from epics import caget\nfrom scan import *\nimport os\nimport sys\nsys.path.append('/home/controls/var/tmp/scripting/dev/')\nfrom eqsans_scanfunctions_live import *\n\nsetipts(1)\n\n# Temperature series (4m 2.5a), control: polysci\ntemp_list = [20, 90]\ntrans_temps = []\n\nfor T in temp_list:\n    set_polysci_temp(T)\n    delay(600)\n\n    # 4m 2.5a\n    if T in trans_temps:\n        loadconf('conf_4000mm_2p5A_60Hz_trans')\n        openShutter()\n        runsampleid(f'T-s 4m 2.5a {T}C', 0, 'peltier', 'pc', 2, 0.15)\n        closeShutter()\n    loadconf('conf_4000mm_2p5A_60Hz_scatt')\n    openShutter()\n    runsampleid(f'S-s 4m 2.5a {T}C', 0, 'peltier', 'pc', 2, 1.0)\n    closeShutter()\n",
+    "id": "temp-polysci",
+    "ok": true,
+    "tool": "build_temperature_script"
+  },
+  {
+    "args": {
+      "configs": [
+        "4m 2.5a",
+        "8m 12a 30hz"
+      ],
+      "equil_delay": 900,
+      "samples": [
+        {
+          "items": 0,
+          "name": "s",
+          "pos": 2,
+          "rack": "peltier"
+        }
+      ],
+      "scatt_limit": 1.5,
+      "temps": [
+        20,
+        50,
+        80
+      ],
+      "trans_limit": 0.1,
+      "trans_temps": [
+        20
+      ]
+    },
+    "content": "from epics import caget\nfrom scan import *\nimport os\nimport sys\nsys.path.append('/home/controls/var/tmp/scripting/dev/')\nfrom eqsans_scanfunctions_live import *\n\n# Temperature series (4m 2.5a, 8m 12a), control: peltier1, peltier2\ntemp_list = [20, 50, 80]\ntrans_temps = [20]\n\nfor T in temp_list:\n    if T >= 80:\n        set_polysci_temp(60)\n    setpeltier1temp(T)\n    setpeltier2temp(T)\n    delay(900)\n\n    # 4m 2.5a\n    if T in trans_temps:\n        loadconf('conf_4000mm_2p5A_60Hz_trans')\n        openShutter()\n        runsampleid(f'T-s 4m 2.5a {T}C', 0, 'peltier', 'pc', 2, 0.1)\n        closeShutter()\n    loadconf('conf_4000mm_2p5A_60Hz_scatt')\n    openShutter()\n    runsampleid(f'S-s 4m 2.5a {T}C', 0, 'peltier', 'pc', 2, 1.5)\n    closeShutter()\n\n    # 8m 12a\n    if T in trans_temps:\n        loadconf('conf_8000mm_12A_30Hz_trans')\n        openShutter()\n        runsampleid(f'T-s 8m 12a {T}C', 0, 'peltier', 'pc', 2, 0.1)\n        closeShutter()\n    loadconf('conf_8000mm_12A_30Hz_scatt')\n    openShutter()\n    runsampleid(f'S-s 8m 12a {T}C', 0, 'peltier', 'pc', 2, 1.5)\n    closeShutter()\n",
+    "id": "temp-trans",
+    "ok": true,
+    "tool": "build_temperature_script"
+  }
+]

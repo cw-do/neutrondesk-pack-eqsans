@@ -1,0 +1,182 @@
+{
+  "retrieval": [
+    { "q": "how do I reduce my data to I(Q)?", "expect": ["module12", "guide:script-reduction", "guide:reduction-routes"] },
+    { "q": "what temperature can the peltier reach and when do I need the chiller?", "expect": ["module5"] },
+    { "q": "what moderator does EQ-SANS use?", "expect": ["module11"] },
+    { "q": "how do I set up a rheoSANS shear cell measurement?", "expect": ["module10"] },
+    { "q": "give me a standard script template", "expect": ["module3", "module4"] },
+    { "q": "why does every configuration need its own empty beam?", "expect": ["module1", "guide:eqsans-overview", "guide:protocol"] },
+    { "q": "stitching two detector distances together", "expect": ["guide:stitching", "module12", "guide:script-reduction"] },
+    { "q": "what is a banjo cell", "mustMention": "banjo" },
+    { "q": "what proton charge should I use for a 10 angstrom scattering run", "mustMention": "proton charge" }
+  ],
+  "toolRuns": [
+    {
+      "id": "qrange-label",
+      "tool": "qrange_lookup",
+      "args": { "config_name": "4m 2.5a" },
+      "includes": ["Configuration: conf_4000mm_2p5A_60Hz_scatt", "QMinPractical"]
+    },
+    {
+      "id": "qrange-30hz",
+      "tool": "qrange_lookup",
+      "args": { "config_name": "conf_4000mm_1p5A_30Hz" },
+      "includes": ["QMin2", "WL2Max"]
+    },
+    {
+      "id": "qrange-unknown",
+      "tool": "qrange_lookup",
+      "args": { "config_name": "nonsense" },
+      "expectOk": false,
+      "includes": ["list_qrange_configs"]
+    },
+    {
+      "id": "list-configs",
+      "tool": "list_qrange_configs",
+      "args": {},
+      "includes": ["conf_4000mm_2p5A_60Hz", "conf_8000mm_12p0A_60Hz", "conf_4000mm_1p5A_30Hz"]
+    },
+    {
+      "id": "list-functions",
+      "tool": "list_scan_functions",
+      "args": {},
+      "includes": ["runsampleid", "setpeltier1temp"]
+    },
+    {
+      "id": "lookup-exact",
+      "tool": "lookup_scan_function",
+      "args": { "query": "runsampleid" },
+      "includes": ["def runsampleid("]
+    },
+    {
+      "id": "lookup-keyword",
+      "tool": "lookup_scan_function",
+      "args": { "query": "peltier" },
+      "includes": ["peltier"]
+    },
+    {
+      "id": "lookup-robot",
+      "tool": "lookup_scan_function",
+      "args": { "query": "robot" },
+      "includes": ["robot"]
+    },
+    {
+      "id": "lookup-none",
+      "tool": "lookup_scan_function",
+      "args": { "query": "zzzqqq" },
+      "expectOk": false,
+      "includes": ["list_scan_functions"]
+    },
+    {
+      "id": "sample-basic",
+      "tool": "build_sample_script",
+      "args": {
+        "ipts": 37902,
+        "configs": ["4m 2.5a"],
+        "samples": [{ "name": "sampleA", "items": 0, "pos": 2, "rack": "peltier" }]
+      },
+      "includes": ["setipts(37902)", "T-emptybeam", "# Transmission 4m 2.5a", "# Scattering 4m 2.5a"],
+      "excludes": ["S-emptybeam"]
+    },
+    {
+      "id": "sample-two-configs",
+      "tool": "build_sample_script",
+      "args": {
+        "ipts": 99999,
+        "configs": ["4m 2.5a", "8m 12a 30hz"],
+        "samples": [
+          { "name": "s1", "items": 0, "pos": 2, "rack": "peltier" },
+          { "name": "s2", "items": 0, "pos": 3, "rack": "peltier" }
+        ]
+      },
+      "includes": ["loadconf('conf_4000mm_2p5A_60Hz_trans')", "loadconf('conf_8000mm_12A_30Hz_scatt')"]
+    },
+    {
+      "id": "sample-skip-eb",
+      "tool": "build_sample_script",
+      "args": {
+        "ipts": 99999,
+        "configs": ["4m 2.5a", "8m 12a 30hz"],
+        "samples": [
+          { "name": "s1", "items": 0, "pos": 2, "rack": "peltier" },
+          { "name": "s2", "items": 0, "pos": 3, "rack": "peltier" }
+        ],
+        "configs_without_empty_beam": ["4m 2.5a"]
+      },
+      "includes": ["T-emptybeam 8m 12a"],
+      "excludes": ["T-emptybeam 4m 2.5a"]
+    },
+    {
+      "id": "sample-scatt-only",
+      "tool": "build_sample_script",
+      "args": {
+        "ipts": 1,
+        "configs": ["4m 2.5a"],
+        "samples": [{ "name": "s1", "items": 0, "pos": 2, "rack": "banjo", "trans": false }]
+      },
+      "includes": ["# Scattering 4m 2.5a"],
+      "excludes": ["# Transmission", "emptybeam"]
+    },
+    {
+      "id": "sample-limits",
+      "tool": "build_sample_script",
+      "args": {
+        "ipts": 1,
+        "configs": ["1.3m 0.5a"],
+        "samples": [{ "name": "s1", "items": 7, "pos": 4, "rack": "ti" }],
+        "trans_limit": 0.2,
+        "scatt_limit": 2
+      },
+      "includes": ["'pc', 4, 0.2)", "'pc', 4, 2.0)"]
+    },
+    {
+      "id": "sample-pos1-taken",
+      "tool": "build_sample_script",
+      "args": {
+        "ipts": 1,
+        "configs": ["4m 2.5a"],
+        "samples": [{ "name": "s1", "items": 0, "pos": 1, "rack": "peltier" }]
+      },
+      "includes": ["runsampleid('T-emptybeam 4m 2.5a', 0, 'peltier', 'pc', 2, 0.15)"]
+    },
+    {
+      "id": "temp-basic",
+      "tool": "build_temperature_script",
+      "args": {
+        "ipts": 1,
+        "configs": ["4m 2.5a"],
+        "samples": [{ "name": "s", "items": 0, "pos": 2, "rack": "peltier" }],
+        "temps": [20, 90]
+      },
+      "includes": ["if T >= 80:", "set_polysci_temp(60)", "delay(600)", "temp_list = [20, 90]"]
+    },
+    {
+      "id": "temp-polysci",
+      "tool": "build_temperature_script",
+      "args": {
+        "ipts": 1,
+        "configs": ["4m 2.5a"],
+        "samples": [{ "name": "s", "items": 0, "pos": 2, "rack": "peltier" }],
+        "temps": [20, 90],
+        "controls": ["polysci"]
+      },
+      "includes": ["set_polysci_temp(T)"],
+      "excludes": ["if T >= 80:"]
+    },
+    {
+      "id": "temp-trans",
+      "tool": "build_temperature_script",
+      "args": {
+        "configs": ["4m 2.5a", "8m 12a 30hz"],
+        "samples": [{ "name": "s", "items": 0, "pos": 2, "rack": "peltier" }],
+        "temps": [20, 50, 80],
+        "trans_temps": [20],
+        "equil_delay": 900,
+        "trans_limit": 0.1,
+        "scatt_limit": 1.5
+      },
+      "includes": ["trans_temps = [20]", "delay(900)", "'pc', 2, 0.1)", "'pc', 2, 1.5)"],
+      "excludes": ["setipts("]
+    }
+  ]
+}

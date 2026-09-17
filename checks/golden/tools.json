@@ -1,0 +1,279 @@
+[
+  {
+    "activityEmpty": "Working out the Q-range for that configuration",
+    "schema": {
+      "function": {
+        "description": "Compute the Q-range (QMin/QMax), wavelength range, TOF range and beam diameter for a named EQ-SANS configuration. Use list_qrange_configs first if unsure of the exact name. QMin is idealised from the beamstop size alone; QMinPractical is the more realistic estimate — prefer it when asked what Q is actually achievable, and say it is an estimate.",
+        "name": "qrange_lookup",
+        "parameters": {
+          "properties": {
+            "config_name": {
+              "description": "Configuration name, e.g. 'conf_4000mm_2p5A_60Hz'. A label like '4m 2.5a' also works.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "config_name"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    }
+  },
+  {
+    "activityEmpty": "Listing the instrument configurations",
+    "schema": {
+      "function": {
+        "description": "List every EQ-SANS configuration name available to qrange_lookup and to the script builders' `configs` argument.",
+        "name": "list_qrange_configs",
+        "parameters": {
+          "properties": {},
+          "type": "object"
+        }
+      },
+      "type": "function"
+    }
+  },
+  {
+    "activityEmpty": "Listing the scan functions",
+    "schema": {
+      "function": {
+        "description": "List the names of every EQ-SANS scan function. Use before lookup_scan_function when you need to see what exists.",
+        "name": "list_scan_functions",
+        "parameters": {
+          "properties": {},
+          "type": "object"
+        }
+      },
+      "type": "function"
+    }
+  },
+  {
+    "activityEmpty": "Looking up the scan function",
+    "schema": {
+      "function": {
+        "description": "Get the exact source — signature, parameters, comments, the real EPICS/PV calls — of EQ-SANS scan functions, by name or by topic keyword. Use this for ANY question about what a function does, its parameters, or how to control something. Never guess a function name or signature.",
+        "name": "lookup_scan_function",
+        "parameters": {
+          "properties": {
+            "query": {
+              "description": "A function name ('setpeltier1temp') or a topic keyword ('peltier', 'transmission').",
+              "type": "string"
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    }
+  },
+  {
+    "activityEmpty": "Building the scan script",
+    "schema": {
+      "function": {
+        "description": "Generate a complete EQ-SANS scan script for a set of samples across one or more configurations: imports, setipts, then a transmission block and a scattering block per configuration. The empty-beam transmission run is added automatically. Deterministic — always use this instead of writing the script by hand.",
+        "name": "build_sample_script",
+        "parameters": {
+          "properties": {
+            "configs": {
+              "description": "Configurations to measure — an exact name ('conf_4000mm_2p5A_60Hz') or a plain label ('4m 2.5a', '9m 15a 30hz'). Pass through what the user said.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "configs_without_empty_beam": {
+              "description": "Subset of `configs` whose empty beam was ALREADY measured earlier in this experiment. Leave empty for a first script — every configuration needs its own.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "ipts": {
+              "description": "IPTS number. Use 99999 if the user hasn't given one.",
+              "type": "number"
+            },
+            "samples": {
+              "description": "Samples to measure at each configuration.",
+              "items": {
+                "properties": {
+                  "items": {
+                    "description": "Sample ITEM number (0 if none assigned).",
+                    "type": "number"
+                  },
+                  "name": {
+                    "description": "Sample name/label, e.g. 'sampleA'.",
+                    "type": "string"
+                  },
+                  "pos": {
+                    "description": "Position/slot in the rack. -1 for a non-standard environment.",
+                    "type": "number"
+                  },
+                  "rack": {
+                    "description": "Sample-environment rack type.",
+                    "enum": [
+                      "peltier",
+                      "banjo",
+                      "ti",
+                      "tumbler",
+                      "humid"
+                    ],
+                    "type": "string"
+                  },
+                  "scatt": {
+                    "description": "Measure scattering. Defaults to true.",
+                    "type": "boolean"
+                  },
+                  "trans": {
+                    "description": "Measure transmission. Defaults to true; only set false for a deliberate scattering-only repeat.",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "name",
+                  "items",
+                  "pos",
+                  "rack"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "scatt_limit": {
+              "description": "Proton charge for scattering runs. Default 1.0.",
+              "type": "number"
+            },
+            "trans_limit": {
+              "description": "Proton charge for transmission runs. Default 0.15.",
+              "type": "number"
+            }
+          },
+          "required": [
+            "ipts",
+            "configs",
+            "samples"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    }
+  },
+  {
+    "activityEmpty": "Building the temperature-series script",
+    "schema": {
+      "function": {
+        "description": "Generate an EQ-SANS temperature-series script: a loop over temperatures that sets the controllers, waits for equilibration, then measures. Includes the >=80C polysci chiller guard. Deterministic — always use this instead of writing the script by hand.",
+        "name": "build_temperature_script",
+        "parameters": {
+          "properties": {
+            "configs": {
+              "description": "Configurations measured at each temperature.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "controls": {
+              "description": "Controllers to set. Default: both peltier blocks.",
+              "items": {
+                "enum": [
+                  "peltier1",
+                  "peltier2",
+                  "polysci"
+                ],
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "equil_delay": {
+              "description": "Equilibration delay in seconds. Default 600.",
+              "type": "number"
+            },
+            "ipts": {
+              "description": "IPTS number; omit if already set.",
+              "type": "number"
+            },
+            "samples": {
+              "description": "Samples measured at each temperature.",
+              "items": {
+                "properties": {
+                  "items": {
+                    "description": "Sample ITEM number (0 if none assigned).",
+                    "type": "number"
+                  },
+                  "name": {
+                    "description": "Sample name/label, e.g. 'sampleA'.",
+                    "type": "string"
+                  },
+                  "pos": {
+                    "description": "Position/slot in the rack. -1 for a non-standard environment.",
+                    "type": "number"
+                  },
+                  "rack": {
+                    "description": "Sample-environment rack type.",
+                    "enum": [
+                      "peltier",
+                      "banjo",
+                      "ti",
+                      "tumbler",
+                      "humid"
+                    ],
+                    "type": "string"
+                  },
+                  "scatt": {
+                    "description": "Measure scattering. Defaults to true.",
+                    "type": "boolean"
+                  },
+                  "trans": {
+                    "description": "Measure transmission. Defaults to true; only set false for a deliberate scattering-only repeat.",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "name",
+                  "items",
+                  "pos",
+                  "rack"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "scatt_limit": {
+              "type": "number"
+            },
+            "temps": {
+              "description": "Temperature series, degrees C.",
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "trans_limit": {
+              "type": "number"
+            },
+            "trans_temps": {
+              "description": "Temperatures at which to also measure transmission. Default none — transmission is normally measured once, at the initial temperature.",
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "configs",
+            "samples",
+            "temps"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    }
+  }
+]
