@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "id": "EQSANS",
+  "facility": "SNS",
+  "name": "EQSANS",
+  "shortName": "EQ-SANS",
+  "fullName": "Extended Q-Range Small-Angle Neutron Scattering Diffractometer",
+  "beamline": "BL-6",
+  "blurb": "Small-angle scattering, time-of-flight. Full NeutronDesk support.",
+  "capabilities": ["runs", "monitor", "detector", "pv", "guides", "agent", "reduction"],
+  "usesSansTitleConvention": true,
+  "guides": {
+    "order": [
+      "eqsans-overview",
+      "reduction-routes",
+      "script-reduction",
+      "protocol",
+      "configurations",
+      "background-selection",
+      "absolute-scale",
+      "stitching",
+      "instrument-files",
+      "oncat-access",
+      "eqsanscli-commands",
+      "sansdir",
+      "troubleshooting"
+    ],
+    "categories": ["experiment", "reduction", "data-access", "eqsanscli", "sansdir", "troubleshooting"]
+  },
+  "links": [
+    {
+      "id": "eqsans-userguide",
+      "label": "EQ-SANS user guide",
+      "url": "https://sites.google.com/view/eqsans",
+      "what": "The instrument team’s own how-to for reducing EQ-SANS data. The most current source; the reduction guides here follow it.",
+      "group": "start"
+    },
+    {
+      "id": "eqsans-home",
+      "label": "EQ-SANS instrument page",
+      "url": "https://neutrons.ornl.gov/eqsans",
+      "what": "Official specification, capabilities and contacts for BL-6.",
+      "group": "start"
+    }
+  ],
+  "agent": {
+    "suggestions": [
+      "What Q range do I get at 4m 2.5a?",
+      "Script for 2 samples at 4m 2.5a and 8m 12a",
+      "How do I reduce this data?",
+      "How do I set the peltier temperature?",
+      "Why does every configuration need its own empty beam?"
+    ]
+  },
+  "maintainers": [{ "name": "Changwoo Do", "email": "snseqsans@gmail.com" }]
+}

@@ -1,0 +1,1576 @@
+# Beamline-6 EQ-SANS C Do
+from epics import caget, caput, PV, cainfo
+from scan import *
+import os
+import sys
+import time
+import traceback
+from datetime import datetime, timedelta
+# from script.ScriptUtils.ScriptOperations import ScriptCommandSetScanTitle
+# import savevalue
+sys.path.append('/home/controls/share/master/python/Util')
+from Autosave import Autosave
+from scantools.scripting import If, Set, SetLog, Submit, Delay, Run
+
+cmds = []
+tot_cmds = []
+#client = ScanClient('bl6-dassrv1.sns.gov')
+client = ScanClient('10.111.12.130')
+pctotal = 0.0
+timetotal = 0
+gsimulate = False
+this_name= os.path.basename(sys.argv[0])
+
+def getfuncname():
+    stack = traceback.extract_stack()
+    (filename, line, procname, text) =stack[-1]
+    return procname
+    
+def beamstopX(pos):
+    scantitle = 'beamstopX('+str(pos)+')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:beamstopX', pos, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def beamstopY30(pos):
+    scantitle = 'beamstopY30('+str(pos)+')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:beamstopY30', pos, completion = True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def beamstopY60(pos):
+    scantitle = 'beamstopY60('+str(pos)+')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:beamstopY60', pos, completion = True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def beamstopY90(pos):
+    scantitle = 'beamstopY90('+str(pos)+')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:beamstopY90', pos, completion = True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def beamslit1(slitname):
+    if slitname in ["d26_NoCd", "d25_Cd","d10_Cd", "d25mm", "d20mm", "d15mm", "d10mm", "d5mm"]:
+        scantitle = 'beamslit1'+ slitname +')'
+        cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+        cmds.append(Set('BL6:Mot:beamslit1:Menu', slitname, completion = True))
+        id = submitsmart(cmds, scantitle)
+        print(scantitle)
+        newscan()
+    else:
+        raise Exception("BL6-ScriptError: Cannot find the variable name : " + slitname)
+
+def movebeamslit1(value):
+    scantitle = 'movebeamslit1(' + str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:beamslit1', value, completion = True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+    
+def beamslit2(slitname):
+    if slitname in ["d25_NoCd", "d20_Cd", "d25mm", "d20mm", "d15mm", "d10mm", "d5mm"]:
+        scantitle = 'beamslit2('+slitname+')'
+        cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+        cmds.append(Set('BL6:Mot:beamslit2:Menu', slitname, completion = True))
+        id = submitsmart(cmds, scantitle)
+        print(scantitle)
+        newscan()
+    else:
+        raise Exception("BL6-ScriptError: Cannot find the variable name : " + slitname)
+
+def beamslit3(slitname):
+    if slitname in ["d25_NoCd", "d20_Cd", "d25mm", "d20mm", "d15mm", "d10mm", "d5mm"]:
+        scantitle = 'beamslit3('+ slitname +')'
+        cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+        cmds.append(Set('BL6:Mot:beamslit3:Menu', slitname, completion = True))
+        id = submitsmart(cmds, scantitle)
+        print(scantitle)
+        newscan()
+    else:
+        raise Exception("BL6-ScriptError: Cannot find the variable name : " + slitname)
+
+def beamslit4(slitsize):
+    scantitle = 'beamslit4('+str(slitsize)+')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:CS:beamslit4', slitsize))
+    scantitle = 'beamslit4('+str(slitsize)+')'
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+
+def setWL(wl):
+    scantitle = 'setWL('+str(wl)+')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Chop:Skf16:InitWvlenReq', wl, completion = True))  #Skf16 since 2026A
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def closeShutter():
+    scantitle = 'closeShutter()'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:shutter:SFWMoveShutter', 'Closed', completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def openShutter():
+    scantitle = 'openShutter()'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:shutter:SFWMoveShutter', 'Open', completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def movedetector(detz):
+    scantitle = 'movedetector('+str(detz) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:detectorZ', detz, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def movemask(value):
+    scantitle = 'movemask('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:mask', value, completion = True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+def chopperfreq(hz):
+    scantitle = 'chopperfreq('+str(hz) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Chop:Skf16:SpeedReq', hz, completion=True)) #updated name since 2026A
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+
+def set_chopper_delay(chopper, value):
+    scantitle = 'set_chopper_delay('+str(chopper)+', '+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    if chopper ==1 :
+        cmds.append(Set('BL6:Chop:Skf1:OpModeSet', 0, completion=True))
+        cmds.append(Set('BL6:Chop:Skf1:PhaseTimeDelaySet', value, completion=True, readback=True, tolerance=10))
+    elif chopper == 2: 
+        cmds.append(Set('BL6:Chop:Skf2:OpModeSet', 0, completion=True))
+        cmds.append(Set('BL6:Chop:Skf2:PhaseTimeDelaySet', value, completion=True, readback=True, tolerance=10))
+    elif chopper ==3:
+        cmds.append(Set('BL6:Chop:Skf3:OpModeSet', 0, completion=True))
+        cmds.append(Set('BL6:Chop:Skf3:PhaseTimeDelaySet', value, completion=True, readback=True, tolerance=10))
+    elif chopper ==4:
+        cmds.append(Set('BL6:Chop:Skf4:OpModeSet', 0, completion=True))
+        cmds.append(Set('BL6:Chop:Skf4:PhaseTimeDelaySet', value, completion=True, readback=True, tolerance=10))
+    else:
+        print("CHECK: which chopper phase ??? ")
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def set_choppers_auto():
+    scantitle = 'set_choppers_auto()'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Chop:Skf1:OpModeSet', 1, completion=True))
+    cmds.append(Set('BL6:Chop:Skf2:OpModeSet', 1, completion=True))
+    cmds.append(Set('BL6:Chop:Skf3:OpModeSet', 1, completion=True))
+    cmds.append(Set('BL6:Chop:Skf4:OpModeSet', 1, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+
+###############
+# Sample Environment
+###############
+
+def movetransx(value):
+    scantitle = 'movetransx('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:transX', value, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+def movetransz(value):
+    scantitle = 'movetransz('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:transZ', value, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+        
+def moveroth(value):
+    scantitle = 'moveroth('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:hRotStage', value, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+def tumbler(args):
+    if args.lower() == 'on' or args.lower() == 'start' :
+        scantitle = 'tumbler('+ args + ')'
+        cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+        cmds.append(Set('BL6:Mot:tumblerRot:StartRot.PROC', 1, completion = False))
+        id = submitsmart(cmds, scantitle)
+        print(scantitle)
+        newscan()        
+    elif args.lower() == 'off' or args.lower() =='stop':
+        scantitle = 'tumbler('+ args + ')'
+        cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+        cmds.append(Set('BL6:Mot:tumblerRot.STOP', 1, completion = False))
+        id = submitsmart(cmds, scantitle)
+        print(scantitle)
+        newscan()
+    else:
+        raise Exception("BL6-ScriptError: unknown arguments. (start, stop, on, off)")
+
+def sethaaketemp(value):
+    scantitle = 'sethaaketemp('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:HAAKE:WriteSetPointTemp', value, completion = True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def setpeltier1temp(value):
+    scantitle = 'setpeltier1temp('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:QNTC1:WriteTargetTemp', value, completion = True))
+    cmds.append(Delay(1))
+    cmds.append(Set('BL6:SE:QNTC1:WriteTargetTemp', value, completion = True))
+    cmds.append(Delay(1))
+    cmds.append(Set('BL6:SE:QNTC1:WriteTargetTemp', value, completion = True))    
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def setpeltier2temp(value):
+    scantitle = 'setpeltier2temp('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:QNTC2:WriteTargetTemp', value, completion = True))
+    cmds.append(Delay(1))   
+    cmds.append(Set('BL6:SE:QNTC2:WriteTargetTemp', value, completion = True))  
+    cmds.append(Delay(1))   
+    cmds.append(Set('BL6:SE:QNTC2:WriteTargetTemp', value, completion = True))          
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+       
+def settumblertemp(value):
+    scantitle = 'settumblertemp('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:TUMBLER:SP', value, completion = True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def setfurnacetemp(value):
+    scantitle = 'setfurnacetemp('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:FURNACE:SP', value, completion = True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def sethtfurnacetemp(value):
+    scantitle = 'sethtfurnacetemp('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:NDBLS:Loop1:SPSet', value, completion = True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def rheotrigger(value):
+    scantitle = 'rheotrigger('+ str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:RH:setRelay1BO', value, completion = True))
+    #BL6:SE:RH:setRelay1BO
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan() 
+
+def set_tensileg_gap(value):
+    # caput('BL6:SE:NEWMARK:GAP', gap_sp, wait=True)
+    gap_sp = value * 400 # dist is mm, gap_sp is number of steps
+    scantitle = 'set_tensileg_gap('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:NEWMARK:GAP', gap_sp, completion=True))
+    cmds.append(Delay(1))
+    cmds.append(Set('BL6:SE:NEWMARK:COMMANDS', 5, completion=False, readback=True))
+    cmds.append(Delay(2))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def set_tensileg_move(value):
+    # caput('BL6:SE:NEWMARK:GAP', gap_sp, wait=True)
+    together_sp = value * 400 *2 # dist is mm, gap_sp is number of steps
+    scantitle = 'set_tensileg_gap('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:NEWMARK:TogetherSP', together_sp, completion=True))
+    cmds.append(Delay(1))
+    cmds.append(Set('BL6:SE:NEWMARK:COMMANDS', 8, completion=False, readback=True))
+    cmds.append(Delay(2))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+
+
+def set_field(value):
+    scantitle = 'set_field('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:MagH:SP', value, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+ 
+def set_field_wait(value):
+    scantitle = 'set_field_wait('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:MagHCB:SPSet', value, completion=True, readback=True, tolerance=0.002 ))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+ 
+def set_freq_wait(value):
+    scantitle = 'set_freq_wait('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:SRSWG:FreqSP', value, completion=True, readback=True, tolerance=1000 ))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+
+def set_amp_wait(value):
+    scantitle = 'set_amp_wait('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:SRSWG:AmplSP', value, completion=True, readback=True, tolerance=0.02 ))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+
+##################################
+# Added 8/2/2023 - Gergely Nagy
+# for IPTS-30410
+
+def setteledynepressure(value):
+    scantitle = 'setteledynepressure('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:TD1:PressSet', value, completion = True))
+    
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan() 
+
+def runteledynepump():
+    scantitle = 'runteledynepump'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:TD1:Run', 1, completion=True)) 
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan() 
+
+def stopteledynepump():
+    scantitle = 'stopteledynepump'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:TD1:Stop', 1, completion=True)) 
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan() 
+
+
+##################################
+# Added 12/2/2019 - William Heller
+# BL6:SE:Cryo:Temp:SETP_S2 is input B for ipts-25381
+def set_cryostat_vti(value):
+    scantitle = 'set_cryostat_vti('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:Cryo:Temp:SETP_S1', value, completion=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def set_cryostat_vti_wait(value):
+    scantitle = 'set_cryostat_vti('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    #cmds.append(Set('BL6:SE:Cryo:Temp:SETP_S1', value, completion=True, readback=True, tolerance=0.10))
+    cmds.append(Set('BL6:SE:Cryo:Temp:SETP_S1', value, completion=True, readback=True, tolerance=1.00))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def set_cryostat_sample(value):
+    scantitle = 'set_cryostat_sample('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:Cryo:Temp:SETP_S2', value, completion=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def set_cryostat_sample_wait(value):
+    scantitle = 'set_cryostat_sample('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    #cmds.append(Set('BL6:SE:Cryo:Temp:SETP_S2', value, completion=True, readback=True, tolerance=0.10))
+    cmds.append(Set('BL6:SE:Cryo:Temp:SETP_S2', value, completion=True, readback=True, tolerance=1.00))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+##################################
+
+##################################
+# Added 12/18/2019 - C Do
+# HOT-024 furnace
+def set_furnace_temp(value):
+    scantitle = 'set_furnace_temp('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:NDBLS:Loop1:SPSet', value, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+##################################
+# Added 16/04/2026 - GN   
+def set_furnace_ramprate(value):
+    scantitle = 'set_furnace_ramprate('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:NDBLS:Loop1:SP:RateSet', value, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+##################################
+
+##################################
+# Added 1/17/19 - W Heller
+# Polyscience Chiller
+def set_polysci_temp(value):
+    scantitle = 'set_polysci_temp('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:PolyScience:SPWrite', value, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+##################################
+
+
+###############################
+# cryostat stick rotation stage
+# Added 11/3/2020 - W. Heller
+###############################
+# the PV is BL6:Mot:Sample:Axis1
+def rotate_cryob(value):
+    scantitle = 'rotate_cryob('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:Sample:Axis1', value, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+###############################
+
+
+
+##################################
+# Added 8/24/2021 - C Do
+# sliding shearcell by yangyang wang
+def sc_stop():
+    scantitle = 'sc_stop()'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:SC:Mot:Main:SetState', 0, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def sc_setmanual():
+    scantitle = 'sc_setmanual()'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:SC:Mot:Main:SetState', 1, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def sc_setcycle():
+    scantitle = 'sc_setcycle()'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:SC:Mot:Main:SetState', 2, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+
+
+
+def sc_setspeed(value):
+    scantitle = 'sc_setspeed(' + str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:SC:Mot:Cycle:Speed', value, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+
+##################################
+
+
+
+
+##################################
+# Added 5/16/25 - W Heller
+# this is for the "beamline furnace" nanodac channels
+# for IPTS-34483, these are reading the pressure NanoDac channels
+def setnano1(value):
+    scantitle = 'set_furnace_nano1('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:NDBLS:Loop1:SPSet', value, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+def setnano2(value):
+    scantitle = 'set_furnace_nano2('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:NDBLS:Loop2:SPSet', value, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+ 
+# PVs copied from CSS interface, consistent with those above   
+#    BL6:SE:NDBLS:Loop1:SPSet
+#    BL6:SE:NDBLS:Loop2:SPSet
+##################################
+
+##################################
+# Added 5/16/25 - W Heller
+# this is for the BL-6 6-position furnace nanodac channels
+# for IPTS-34483
+def setnano1(value):
+    scantitle = 'setnano1('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:NDFURNACE:Loop1:SPSet', value, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+def setnano2(value):
+    scantitle = 'setnano2('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:NDFURNACE:Loop2:SPSet', value, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+##################################
+
+
+
+##################################
+# Added 1/20/2023 - G Nagy & C Do
+# power outlet switch
+
+def outletswitch(args):
+    if args.lower() == 'on' or args.lower() == 'start' :
+        scantitle = 'outletswitch('+ args + ')'
+        cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+        cmds.append(Set('BL6:Sample:OutletSwitch', 1, completion = False))
+        id = submitsmart(cmds, scantitle)
+        print(scantitle)
+        newscan() # clears the cmds array       
+    elif args.lower() == 'off' or args.lower() =='stop':
+        scantitle = 'outletswitch('+ args + ')'
+        cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+        cmds.append(Set('BL6:Sample:OutletSwitch', 0, completion = False))
+        id = submitsmart(cmds, scantitle)
+        print(scantitle)
+        newscan()
+    else:
+        raise Exception("BL6-ScriptError: unknown arguments. (start, stop, on, off)")
+##################################
+
+
+############%%%%%##############
+# new gi-sans stage rotations
+# Added 5/7/2026 - W. Heller
+############%%%%%##############
+def rotate_gi_theta(value):
+    scantitle = 'rotate_gi_theta('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:GI:theta', value, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+def rotate_gi_phi(value):
+    scantitle = 'rotate_gi_phi('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:GI:phi', value, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+        
+def rotate_gi_psi(value):
+    scantitle = 'rotate_gi_psi('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:Mot:GI:psi', value, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+############%%%%%##############
+
+##################################
+# Added 1/21/2022 - C Do
+# psylotech tensile stage
+def psylo_tension_step(speed=0.1, dist=1, selector='both'):
+    scantitle = 'psylo_tension_step(' + str(speed) + ', ' + str(dist) + ', ' + str(selector) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+
+    if selector == 'primary' :
+        cmds.append(Set('BL6:SE:PsyloTech:AxisSelector', 1, completion=False, readback=False))
+        cmds.append(Delay(1))
+        cmds.append(Set('BL6:SE:PsyloTech:AxisSelector', 0, completion=False, readback=False))
+    elif selector == 'secondary' :
+        cmds.append(Set('BL6:SE:PsyloTech:AxisSelector', 0, completion=False, readback=False))
+        cmds.append(Delay(1))
+        cmds.append(Set('BL6:SE:PsyloTech:AxisSelector', 1, completion=False, readback=False))
+    else :
+        cmds.append(Set('BL6:SE:PsyloTech:AxisSelector', 0, completion=False, readback=False))
+        cmds.append(Delay(1))
+        cmds.append(Set('BL6:SE:PsyloTech:AxisSelector', 2, completion=False, readback=False))
+    cmds.append(Delay(1))
+    cmds.append(Set('BL6:SE:PsyloTech:MoveSpeed', speed, completion=False, readback=False))
+    cmds.append(Delay(1))
+    cmds.append(Set('BL6:SE:PsyloTech:StepDistance', dist, completion=False, readback=False))
+    cmds.append(Delay(2))
+    cmds.append(Set('BL6:SE:PsyloTech:TensionStep', 1, completion=False, readback=False))
+    #cmds.append(Delay(float(dist/speed + 2)))
+    #cmds.append(Set('BL6:SE:PsyloTech:STOP', 1, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+	
+
+def psylo_stop():
+    scantitle = 'psylo_stop()'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:PsyloTech:STOP', 1, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+    
+def psylo_compression_step(speed=0.1, dist=1, selector='both'):
+    scantitle = 'psylo_compression_step(' + str(speed) + ', ' + str(dist) + ', ' + str(selector) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+
+    if selector == 'primary' :
+        cmds.append(Set('BL6:SE:PsyloTech:AxisSelector', 1, completion=False, readback=False))
+        cmds.append(Delay(1))
+        cmds.append(Set('BL6:SE:PsyloTech:AxisSelector', 0, completion=False, readback=False))
+    elif selector == 'secondary' :
+        cmds.append(Set('BL6:SE:PsyloTech:AxisSelector', 0, completion=False, readback=False))
+        cmds.append(Delay(1))
+        cmds.append(Set('BL6:SE:PsyloTech:AxisSelector', 1, completion=False, readback=False))
+    else :
+        cmds.append(Set('BL6:SE:PsyloTech:AxisSelector', 0, completion=False, readback=False))
+        cmds.append(Delay(1))
+        cmds.append(Set('BL6:SE:PsyloTech:AxisSelector', 2, completion=False, readback=False))
+    cmds.append(Delay(1))
+    cmds.append(Set('BL6:SE:PsyloTech:MoveSpeed', speed, completion=False, readback=False))
+    cmds.append(Delay(1))
+    cmds.append(Set('BL6:SE:PsyloTech:StepDistance', dist, completion=False, readback=False))
+    cmds.append(Delay(1))
+    cmds.append(Set('BL6:SE:PsyloTech:CompressionStep', 1, completion=False, readback=False))
+    #cmds.append(Delay(float(dist/speed + 2)))
+    #cmds.append(Set('BL6:SE:PsyloTech:STOP', 1, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+	
+def psylo_rotcw(step_size):
+    scantitle = 'psylo_rotcw(' + str(step_size) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:PsyloTech:RotStepSize', step_size, completion=False, readback=False))
+    cmds.append(Delay(1))
+    cmds.append(Set('BL6:SE:PsyloTech:RotStepCW', step_size, completion=False, readback=False))    
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+def psylo_rotccw(step_size):
+    scantitle = 'psylo_rotccw(' + str(step_size) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:PsyloTech:RotStepSize', step_size, completion=False, readback=False))
+    cmds.append(Delay(1))
+    cmds.append(Set('BL6:SE:PsyloTech:RotStepCCW', step_size, completion=False, readback=False))    
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()    
+    
+    
+    
+##################################
+
+
+
+##############
+# SCAN CONTROL
+##############
+    
+
+def delay(time):
+    global timetotal
+    timetotal = timetotal + time
+    scantitle = 'delay('+str(time) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Delay(time))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def newscan():
+    global cmds
+    # print "...Resetting cmds for a new scan."
+    cmds = []
+
+
+def setipts(value):
+    scantitle = 'setipts('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:CS:IPTS', value, completion = True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan() 
+
+def setitems(value):
+    scantitle = 'setitems('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:CS:ITEMS', value, completion = True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan() 
+    
+#############################
+# added 11/3/2020 - W. Heller
+#############################
+def setruntitle(title):
+    scantitle = 'setruntitle('+str(title)+')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle ))  
+    cmds.append(Set('BL6:SMS:RunInfo:RunTitle', title))  
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan() 
+#############################
+
+
+def submit(scantitle=os.path.basename(sys.argv[0])):
+    print("...Submitting scan : " + scantitle)
+    cmds.append(Set('BL6:CS:LineLog:Add', 'submit(' + scantitle + ')' )) 
+    id = submitsmart(cmds, scantitle)
+    print("...scan id = " + str(id))
+    newscan()  # after submission, reset the cmds variable
+
+def start():
+    scantitle = 'start()'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:CS:RunControl:Start', 1, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def stop():
+    scantitle = 'stop()'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:CS:RunControl:Stop', 1, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+
+def waitPC(value):
+    global pctotal
+    pctotal = pctotal + value
+    scantitle = 'waitPC('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Wait('BL6:Det:PCharge:C', value, comparison='increase by'))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+
+
+def runsample(title, racktype, timetype, pos, limit):
+    global pctotal, timetotal
+    scantitle = 'runsample('+title + ', ' + racktype + ', ' + timetype + ', ' + str(pos) + ', ' + str(limit) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    
+    cmds.append(Set('BL6:SMS:RunInfo:RunTitle', title))
+
+    if racktype == 'tumbler':
+        print("...Set tumbler for transX")
+        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 1, completion=True))
+    elif racktype == 'banjo':
+        print("...Set banjo for transX")
+        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 2, completion=True))
+    elif racktype == 'peltier':
+        print("...Set peltier for transX")
+        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 3, completion=True))
+    elif racktype == 'ti':
+        print("...Set ti rack for transX")
+        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 4, completion=True))
+    elif racktype == 'humid':
+        print("...Set humidity cell for transX")
+        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 5, completion=True))
+    else: 
+        raise Exception("unknown sample environment type")        
+    if pos > 0 :
+        cmds.append(Set('BL6:Mot:SampleTable:Menu', pos, completion=True))
+    cmds.append(Set('BL6:CS:RunControl:Start', 1, completion=True))
+
+    if timetype == 'pc' or timetype == 'PC':
+        cmds.append(Wait('BL6:Det:PCharge:C', limit, comparison='increase by'))
+        pctotal = pctotal + limit
+    elif timetype.lower() == 'time':
+        cmds.append(Wait('BL6:Det:N1:AcquireTimer_RBV', limit, comparison = 'increase by'))
+        timetotal = timetotal + limit
+    else:
+        raise Exception("unknown time type")   
+    cmds.append(Set('BL6:CS:RunControl:Stop', 1, completion=True))
+
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+
+
+def runsampleid(title, sampleid,  racktype, timetype, pos, limit):
+    global pctotal, timetotal
+    scantitle = 'runsample('+title + ', ' + str(sampleid) + ', ' + racktype + ', ' + timetype + ', ' + str(pos) + ', ' + str(limit) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    
+    cmds.append(Set('BL6:SMS:RunInfo:RunTitle', title))
+    cmds.append(Set('BL6:CS:ITEMS', sampleid))
+
+    if racktype == 'tumbler':
+        print("...Set tumbler for transX")
+        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 1, completion=True))
+    elif racktype == 'banjo':
+        print("...Set banjo for transX")
+        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 2, completion=True))
+    elif racktype == 'peltier':
+        print("...Set peltier for transX")
+        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 3, completion=True))
+    elif racktype == 'ti':
+        print("...Set ti rack for transX")
+        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 4, completion=True))
+    elif racktype == 'humid':
+        print("...Set humidity cell for transX")
+        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 5, completion=True))
+    elif racktype == 'furnace12':	
+        print("...Set 12-pos furnace position for transX")
+        cmds.append(Set('BL6:Mot:SampleTable:FillMenu', 6, completion=True))    
+    else: 
+        raise Exception("unknown sample environment type")        
+    if pos > 0 :
+        cmds.append(Set('BL6:Mot:SampleTable:Menu', pos, completion=True))
+    cmds.append(Set('BL6:CS:RunControl:Start', 1, completion=True))
+
+    if timetype == 'pc' or timetype == 'PC':
+        cmds.append(Wait('BL6:Det:PCharge:C', limit, comparison='increase by'))
+        pctotal = pctotal + limit
+    elif timetype.lower() == 'time':
+        cmds.append(Wait('BL6:Det:N1:AcquireTimer_RBV', limit, comparison = 'increase by'))
+        timetotal = timetotal + limit
+
+    else:
+        raise Exception("unknown time type")   
+    cmds.append(Set('BL6:CS:RunControl:Stop', 1, completion=True))
+
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+    
+
+def runrobotid(title, sampleid,  timetype, pos, limit):
+    # DONOT USE THIS FUNCTION
+    # THIS FUNCTION will be DELETED. 8/25/25
+    global pctotal, timetotal
+    scantitle = 'runrobotid('+title + ', ' + str(sampleid) + ', '  + timetype + ', ' + str(pos) + ', ' + str(limit) + ')'
+    
+    #CHECK existing call back value. 
+    # if not 0,
+    # return it first.
+    # if 0, (assume sample not in the beam), proceed
+    Set('BL6:SE:UR:CassetteNumber', 1, completion=True)
+    If('BL6:SE:UR:SampleNumCB', '>', 0, [ Set('BL6:SE:UR:SampleNumCB', 0, completion=True) ])
+    Submit(name='Check sample in beam then return')
+    If('BL6:SE:UR:State', '=', 4, [Set('BL6:SE:UR:ClearError', 1)])
+    Submit(name='check error')
+    If('BL6:SE:UR:SampleNumCB', '=', 0, [Set('BL6:CS:LineLog:Add', 'CB = 0, proceeding.' , completion=True) ]) 
+    Submit(name='Check sample in beam')
+    
+    #load cell
+    # maybe add a check routine if the current value is not 0? then user need to double check.
+    Set('BL6:SE:UR:SampleNumCB', pos, completion=True)
+    Set('BL6:CS:LineLog:Add', 'robot picks up from position ' + str(pos) )
+    Submit(name='Robot picks up sample from ' + str(pos))
+    
+    SetLog('log.setting runtitle','BL6:SMS:RunInfo:RunTitle', title)
+    SetLog('log.setting items number','BL6:CS:ITEMS', sampleid, completion = True)
+    #Delay(1) #for testing
+    
+    if timetype.lower() == 'pc' :
+        Run(title, wait_pcharge_C=limit)
+        pctotal = pctotal + limit
+    elif timetype.lower() == 'time':
+        Run(title, wait_seconds=limit)
+        timetotal = timetotal + limit
+    elif timetype.lower() == 'delay':
+        Delay(limit)
+    elif timetype.lower() == 'dummy':
+        Run('NotSaving'+title, wait_seconds=0)
+        Delay(limit)
+            
+    Set('BL6:CS:LineLog:Add', scantitle )
+    Submit(name=scantitle)
+    
+    #unload cell
+    Set('BL6:SE:UR:SampleNumCB', 0, completion=True)
+    Set('BL6:CS:LineLog:Add', 'robot returns from beam' )
+    Submit(name='returns sample to pos ' + str(pos))
+    print(scantitle)
+
+
+
+
+
+
+
+
+
+def rr_load(pos):
+    global pctotal, timetotal
+    if pos>42 :
+    	sys.exit(1)
+    # load cell
+    jobtitle = 'Loading sample pos '+str(pos)
+    cmds.append(Set('BL6:SE:UR:CassetteNumber', 1, completion=True,readback=True))
+    cmds.append(Set('BL6:SE:UR:SampleNumCB', pos, completion=True, readback=True))    
+    cmds.append(Set('BL6:CS:LineLog:Add', 'Loading sample pos '+str(pos) ))
+    #cmds.append(Wait(10))
+    id = submitsmart(cmds, jobtitle)
+    print(jobtitle)
+    newscan()
+    # Set info    
+
+def rr_unload(pos=0):
+    global pctotal, timetotal
+    scantitle = 'rr_unload()'
+    # unload cell
+    jobtitle = 'Unloading sample to last known pos... '
+    cmds.append(Set('BL6:SE:UR:CassetteNumber', 1, completion=True, readback=True))
+    cmds.append(Set('BL6:SE:UR:SampleNumCB', 0, completion=True, readback=True))    
+    cmds.append(Set('BL6:CS:LineLog:Add', 'Unloading sample to last known pos ') )
+    #cmds.append(Wait(10))
+    id = submitsmart(cmds, jobtitle)
+    print(jobtitle)
+    newscan()
+
+
+
+def runrobotid2(title, sampleid,  timetype, pos, limit):
+    global pctotal, timetotal
+    scantitle = 'runrobotid('+title + ', ' + str(sampleid) + ', '  + timetype + ', ' + str(pos) + ', ' + str(limit) + ')'
+    
+
+    # load cell
+    jobtitle = 'Loading sample pos '+str(pos)
+    cmds.append(Set('BL6:SE:UR:CassetteNumber', 1, completion=True))
+    cmds.append(Set('BL6:SE:UR:SampleNumber', pos, completion=True))
+    cmds.append(Set('BL6:SE:UR:PlaceSample', 1, completion=True))    
+    cmds.append(Set('BL6:CS:LineLog:Add', 'Loading sample pos '+str(pos) ))
+    id = submitsmart(cmds, jobtitle)
+    newscan()
+    # Set info    
+
+    cmds.append(Set('BL6:SMS:RunInfo:RunTitle', title, completion=True))
+    cmds.append(Set('BL6:CS:ITEMS', sampleid, completion=True))
+    # collect neutron
+    cmds.append(Set('BL6:CS:RunControl:Start', 1, completion=True))
+    if timetype == 'pc' or timetype == 'PC':
+        cmds.append(Wait('BL6:Det:PCharge:C', limit, comparison='increase by'))
+        pctotal = pctotal + limit
+    elif timetype.lower() == 'time':
+        cmds.append(Wait('BL6:Det:N1:AcquireTimer_RBV', limit, comparison = 'increase by'))
+        timetotal = timetotal + limit
+    else:
+        raise Exception("unknown time type")   
+    cmds.append(Set('BL6:CS:RunControl:Stop', 1, completion=True))
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle))
+    id = submitsmart(cmds, scantitle)
+    newscan()
+    
+    # unload cell
+    jobtitle = 'Unloading sample pos '+str(pos)
+    cmds.append(Set('BL6:SE:UR:CassetteNumber', 1, completion=True))
+    cmds.append(Set('BL6:SE:UR:SampleNumber', pos, completion=True))
+    cmds.append(Set('BL6:SE:UR:ReturnSample', 1, completion=True))    
+    cmds.append(Set('BL6:CS:LineLog:Add', 'Unloading sample to pos '+str(pos) ))
+    id = submitsmart(cmds, jobtitle)
+    print(scantitle)
+    newscan()
+
+
+# added 10/31/17 - William Heller and Chris Stanley.  Happy Halloween, Changwoo!
+
+def runfurnace(title, timetype, pos, limit):
+    global pctotal, timetotal
+    scantitle = 'runfurnace('+title + ', ' + timetype + ', ' + str(pos) + ', ' + str(limit) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+        
+    cmds.append(Set('BL6:SMS:RunInfo:RunTitle', title))
+    cmds.append(Set('BL6:Mot:FurnaceTable:Menu', pos, completion=True))
+    cmds.append(Set('BL6:CS:RunControl:Start', 1, completion=True))
+    
+    if timetype == 'pc' or timetype == 'PC':
+        cmds.append(Wait('BL6:Det:PCharge:C', limit, comparison='increase by'))
+        pctotal = pctotal + limit
+    elif timetype.lower() == 'time':
+        cmds.append(Wait('BL6:Det:N1:AcquireTimer_RBV', limit, comparison = 'increase by'))
+        timetotal = timetotal + limit
+    else:
+        raise Exception("unknown time type")   
+    cmds.append(Set('BL6:CS:RunControl:Stop', 1, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+# added 10/28/20 Changwoo
+def runfurnaceid(title,sampleid, timetype, pos, limit):
+    global pctotal, timetotal
+    scantitle = 'runfurnaceid('+title + ', ' + timetype + ', ' + str(pos) + ', ' + str(limit) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+        
+    cmds.append(Set('BL6:SMS:RunInfo:RunTitle', title))
+    cmds.append(Set('BL6:CS:ITEMS', sampleid, completion = True))
+    cmds.append(Set('BL6:Mot:FurnaceTable:Menu', pos, completion=True))
+    cmds.append(Set('BL6:CS:RunControl:Start', 1, completion=True))
+    
+    if timetype == 'pc' or timetype == 'PC':
+        cmds.append(Wait('BL6:Det:PCharge:C', limit, comparison='increase by'))
+        pctotal = pctotal + limit
+    elif timetype.lower() == 'time':
+        cmds.append(Wait('BL6:Det:N1:AcquireTimer_RBV', limit, comparison = 'increase by'))
+        timetotal = timetotal + limit
+    else:
+        raise Exception("unknown time type")   
+    cmds.append(Set('BL6:CS:RunControl:Stop', 1, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+##################################
+# Added 12/2/2019 - William Heller
+def runcryostat(title, timetype, limit):
+    global pctotal, timetotal
+    scantitle = 'runcryostat('+title + ', ' + timetype + ', ' + str(limit) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+        
+    cmds.append(Set('BL6:SMS:RunInfo:RunTitle', title))
+    cmds.append(Set('BL6:CS:RunControl:Start', 1, completion=True))
+    
+    if timetype == 'pc' or timetype == 'PC':
+        cmds.append(Wait('BL6:Det:PCharge:C', limit, comparison='increase by'))
+        pctotal = pctotal + limit
+    elif timetype.lower() == 'time':
+        cmds.append(Wait('BL6:Det:N1:AcquireTimer_RBV', limit, comparison = 'increase by'))
+        timetotal = timetotal + limit
+    else:
+        raise Exception("unknown time type")   
+    cmds.append(Set('BL6:CS:RunControl:Stop', 1, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+##################################
+
+def loadconf(file_name):
+    config_path = "/home/controls/var/QRangeConfigurations/" + file_name
+    print("...Use conf file " + config_path)
+    ( config_dir, config_file ) = os.path.split(config_path)
+    ( config_ioc, config_ext ) = os.path.splitext(config_file)
+    config = Autosave(path=config_dir, ioc=config_ioc, prefix="")
+    #print config
+    #print config.settings
+    scantitle = 'loadconf('+file_name + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    
+    # remove unnecessary PVs
+    config.delete('BL6:CS:QPlan:Comment')
+    config.delete('BL6:CS:QPlan:BSforQ')
+
+    # scattering
+    if config_ioc.endswith('_scatt'):
+        cmds.append(Comment('Set scattering configuration.'))
+        cmds.append(Set('BL6:Mot:shutter:SFWMoveShutter', 2 ))
+        cmds.append(Set('BL6:Mot:detectorZ', config.settings['BL6:CS:QPlan:SampleDetDistance']))
+        cmds.append(Set('BL6:Chop:Skf16:SpeedReq', 30 + 30 * int(config.settings['BL6:CS:QPlan:Freq'])) )  # same enum/order in Q Planner. old PV removed. so I have to give actual freq.
+        cmds.append(Parallel(
+            Set('BL6:Chop:Skf16:InitWvlenReq', config.settings['BL6:CS:QPlan:WLMin']), #BL6:Chop:Skf16:InitWvlenReq
+
+            Set('BL6:Mot:beamslit1:Menu', config.settings['BL6:CS:QPlan:S1s']), # same enum order in Q Planner
+            Set('BL6:Mot:beamslit2:Menu', config.settings['BL6:CS:QPlan:S2s']), # same enum order in Q Planner
+            Set('BL6:Mot:beamslit3:Menu', config.settings['BL6:CS:QPlan:S3s']), # same enum order in Q Planner
+            Set('BL6:CS:beamslit4', config.settings['BL6:CS:QPlan:S4']),
+
+            Set('BL6:Mot:beamstopX', config.settings['BL6:CS:QPlan:BSX']),
+            Set('BL6:Mot:beamstopY30', config.settings['BL6:CS:QPlan:BS30Ys']),
+            Set('BL6:Mot:beamstopY60', config.settings['BL6:CS:QPlan:BS60Ys']),
+            Set('BL6:Mot:beamstopY90', config.settings['BL6:CS:QPlan:BS90Ys']),
+            
+            Set('BL6:CS:DataType', 0)
+            ))
+            
+    # transmission
+    elif config_ioc.endswith('_trans'):
+        cmds.append(Comment('Set transmission configuration.'))
+        cmds.append(Set('BL6:Mot:shutter:SFWMoveShutter', 2))
+        cmds.append(Set('BL6:Mot:detectorZ', config.settings['BL6:CS:QPlan:SampleDetDistance']))
+        cmds.append(Set('BL6:Chop:Skf16:SpeedReq', 30 + 30 * int(config.settings['BL6:CS:QPlan:Freq'])) ) # same enum/order in Q Planner
+        cmds.append(Parallel(
+            Set('BL6:Chop:Skf16:InitWvlenReq', config.settings['BL6:CS:QPlan:WLMin']),
+            Set('BL6:Mot:beamslit1:Menu', config.settings['BL6:CS:QPlan:S1t']), # same enum order in Q Planner
+            Set('BL6:Mot:beamslit2:Menu', config.settings['BL6:CS:QPlan:S2t']), # same enum order in Q Planner
+            Set('BL6:Mot:beamslit3:Menu', config.settings['BL6:CS:QPlan:S3t']), # same enum order in Q Planner
+            Set('BL6:CS:beamslit4', config.settings['BL6:CS:QPlan:S4']),
+
+            Set('BL6:Mot:beamstopX', config.settings['BL6:CS:QPlan:BSX']),
+            Set('BL6:Mot:beamstopY30', config.settings['BL6:CS:QPlan:BS30Yt']),
+            Set('BL6:Mot:beamstopY60', config.settings['BL6:CS:QPlan:BS60Yt']),
+            Set('BL6:Mot:beamstopY90', config.settings['BL6:CS:QPlan:BS90Yt']),
+            Set('BL6:CS:DataType', 1)
+            ))
+    else:
+        raise Exception("unknown configuration type")
+        # shouldn't proceed by just ignoring this problem
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+
+
+def maghscanup(startvalue, endvalue, step, waittime, title, timetype, limit):
+    '''
+    Perform data collection by changing magh field from startvalue to endvalue (kG) by step (kG)
+    title is used as a basename.
+
+    PV limit value check is not currently performed here. 
+    Once we decide which algorithm to use for checking, this can be implemented easily.
+    '''
+    global pctotal, timetotal
+    scantitle = "maghscanup(" + str(startvalue) + ", " + str(endvalue) + ", " + str(step) + ", " +str(waittime) + ", "+ title + ", " + timetype + ", " + str(limit) + ")"
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle  )) 
+    print(scantitle)
+    
+    if startvalue < endvalue:
+        value = startvalue
+        while value <= endvalue:
+            subscantitle = "...maghscanup(" + title + " at " + str(value) + " kG)"
+            cmds.append(Set('BL6:CS:LineLog:Add', subscantitle ))
+            print(subscantitle)
+            cmds.append(Set('BL6:SE:MagH:SetUpperSweepLimit', value, completion=True, readback=True, tolerance=0.2 ))
+            cmds.append(Set('BL6:SE:MagH:SetSweepMode', 0, completion=True, readback=True, tolerance=0.2, timeout=10))
+            cmds.append(Delay(waittime))
+            timetotal = timetotal + waittime
+            cmds.append(Script("SetTextPV", "BL6:SMS:RunInfo:RunTitle", title + " at Field = `BL6:SE:MagH:ReadField`"))
+            # cmds.append(Set('BL6:SMS:RunInfo:RunTitle', title + ' at pv = ' + str(value) ))
+            cmds.append(Set('BL6:CS:RunControl:Start', 1, completion=True))
+            if timetype == 'pc' or timetype == 'PC':
+                cmds.append(Wait('BL6:Det:PCharge:C', limit, comparison='increase by'))
+                pctotal = pctotal + limit
+            elif timetype.lower() == 'time':
+                cmds.append(Wait('BL6:Det:N1:AcquireTimer_RBV', limit, comparison = 'increase by'))
+                timetotal = timetotal + limit
+            else:
+                raise Exception("unknown time type")   
+            cmds.append(Set('BL6:CS:RunControl:Stop', 1, completion=True))
+            value += step
+    else:
+        value = startvalue
+        if step >0:
+            raise Exception("Check the sign of the step")
+        while value >= endvalue:
+            cmds.append(Set('BL6:CS:LineLog:Add', "...maghscanup(" + title + " at " + str(value) + " kG)" ))
+            print(subscantitle)
+            cmds.append(Set('BL6:SE:MagH:SetUpperSweepLimit', value, completion=True, readback=True, tolerance=0.2 ))
+            cmds.append(Set('BL6:SE:MagH:SetSweepMode', 0, completion=True, readback=True, tolerance=0.2, timeout=10))
+            cmds.append(Delay(waittime))
+            cmds.append(Script("SetTextPV", "BL6:SMS:RunInfo:RunTitle", title + " at Field = `BL6:SE:MagH:ReadField`"))
+            # cmds.append(Set('BL6:SMS:RunInfo:RunTitle', title + ' at pv = ' + str(value) ))
+            cmds.append(Set('BL6:CS:RunControl:Start', 1, completion=True))
+            if timetype == 'pc' or timetype == 'PC':
+                cmds.append(Wait('BL6:Det:PCharge:C', limit, comparison='increase by'))
+                pctotal = pctotal + limit
+            elif timetype.lower() == 'time':
+                cmds.append(Wait('BL6:Det:N1:AcquireTimer_RBV', limit, comparison = 'increase by'))
+                timetotal = timetotal + limit
+            else:
+                raise Exception("unknown time type")   
+            cmds.append(Set('BL6:CS:RunControl:Stop', 1, completion=True))
+            value += step
+    id = submitsmart(cmds, scantitle)
+    newscan()
+
+
+
+
+
+############
+# ETC
+############
+
+def setpv(pv, value, wait=True):
+    """
+    generalized command to set PVs
+    """
+    if pv.lower() == 'detector' :
+        movedetector(value)
+    elif pv.lower() == 'beamstopx' :
+        beamstopX(value)
+    elif pv.lower() == 'beamstopy30':
+        beamstopY30(value)
+    elif pv.lower() == 'beamstopy60':
+        beamstopY60(value)
+    elif pv.lower() == 'beamstopy90':
+        beamstopY90(value)
+    elif pv.lower() == 'beamslit1':
+        beamslit1(value)
+    elif pv.lower() == 'beamslit2':
+        beamslit2(value)
+    elif pv.lower() == 'beamslit3':
+        beamslit3(value)
+    elif pv.lower() == 'beamslit4':
+        beamslit4(value)
+    elif pv.lower() == 'wl':
+        setWL(value)
+    elif pv.lower() == 'chopperspeed' or pv.lower() =='chopperfreq' or pv.lower()=='freq' :
+        chopperfreq(value)
+    elif pv.lower() == 'tumbler':
+        tumbler(value)
+    elif pv.lower() == 'shutter' or pv.lower()=='secondaryshutter':
+        if value.lower() == 'open':
+            openShutter()
+        elif value.lower() =='close':
+            closeShutter()
+        else:
+            print('.Error. Value is not recognized.')
+    elif pv.lower() == 'transx':
+        movetransx(value)
+    else:
+        print("...Not a predefined PV. Processing as a raw command")
+        scantitle = 'set(' +pv + ', ' + str(value) + ')'
+        cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+        cmds.append(Set(pv, value, completion = wait))
+        id = submitsmart(cmds, scantitle)
+        print(scantitle)
+        newscan()
+
+def estimatetimeold():
+    print( ".Total PC = %.2f C \n..........= %.2f hours (%.1f min) at 1.2 MW \n..........= %.2f hours (%.1f min) at 1.0 MW \n..........= %.2f hours (%.1f min) at 1.3 MW"  % (pctotal , pctotal/4.32, pctotal/4.32*60 , pctotal/3.6, pctotal/3.6*60, pctotal/4.68, pctotal/4.68*60))
+    print( ".Other time = %.1f s = %.2f hours" %(timetotal, timetotal/3600))
+
+def estimatetime(power=1.7, factor=4.6):
+    # factor used to be 3.6 before 2024
+    # factor 4.7 pc for 1hr @ 2024.9.4  3.4 pc tool 43 min
+    # since the new start in 2024, it seems 2.4 is more like it especially when power is 850kw.
+    print( ".Total PC = %.2f C \n" %(pctotal))
+    print( ".Estimating based on " + str(factor) + " PC for 1 hour measured on 2024-9-4")
+    scaled_hr = (pctotal/factor)*(1.7/power)
+    print( "..........= %.2f hours (%.1f min) at %.2f MW \n"  %(scaled_hr, 60.0*scaled_hr, power))
+    print( ".....Other time = %.1f s = %.2f hours\n\n" % (timetotal, float(timetotal)/3600))
+    print( ".....Total time = %.2f hours\n" % ((float(timetotal)/3600 + scaled_hr)))
+    print( ".....Now = ", datetime.now())
+    print( ".....Ending = ", datetime.now() + timedelta(hours= (float(timetotal)/3600 + scaled_hr )))
+
+def estimatetimefs(power=1.7, factor=2.4):
+    # 1.7 mw, 2.4pc is 1 hr
+    print( ".Total PC = %.2f C \n" %(pctotal))
+    scaled_hr = (pctotal/factor)*(1.7/power) 
+    print( "..........= %.2f hours (%.1f min) at %.2f MW \n"  %(scaled_hr, 60.0*scaled_hr, power))
+    print( ".....Other time = %.1f s = %.2f hours\n\n" % (timetotal, float(timetotal)/3600))
+    print( ".....Total time = %.2f hours\n" % ((float(timetotal)/3600 + scaled_hr)))
+    print( ".....Now = ", datetime.now())
+    print( ".....Ending = ", datetime.now() + timedelta(hours= (float(timetotal)/3600 + scaled_hr )))
+    
+    
+def resettime(): # reset time counter
+    global pctotal
+    global timetotal
+    pctotal = 0.0
+    timetotal = 0
+
+
+def readpv(pv):
+    '''
+    This function can be used to read PV value at the time when this command is executed.
+    However, if you use this function, the python script will not complete loading until
+    this command is executed. 
+    '''
+    global pctotal, timetotal, gsimulate
+    scantitle = "readpv(" + str(pv) + ")"
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle  )) 
+    #cmds.append(Script("SetTextPV", "BL6:SMS:RunInfo:RunTitle", "`BL6:SE:MagH:ReadField`"))
+    # BL6:CS:Chat
+    id = submitsmart(cmds, scantitle)
+    if gsimulate == True:
+        temp = caget(pv)
+    else:
+        scan_info = client.scanInfo(id)
+        while not scan_info.isDone():
+            time.sleep(0.2)
+            scan_info=client.scanInfo(id)
+        temp = caget(pv)
+    print('readpv = ' + str(temp))
+    return temp
+
+
+      
+def simulatethis(scantitle=os.path.basename(sys.argv[0])):
+    '''
+    This function simulates a scan or an ensamble of scans in the script.
+    It does not require any parameters.
+    '''
+    global gsimulate
+    print("\n")
+    print("...Simulating the scan  " )
+    print("\n")
+    gsimulate = True
+    
+    
+def submitsmart(cmds, scantitle):
+    global gsimulate
+    if gsimulate == True:
+        id = client.simulate(cmds)
+        # print('simulate')        
+    else:
+        id = client.submit(cmds,scantitle)
+    return id
+    
+    
+#modification added by GN on 11/12/2024 after peltier failing to driving to set value    
+def setpeltier1temp_mod(value):
+    scantitle = 'setpeltier1temp_mod('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    #cmds.append(Set('BL6:SE:QNTC1:WriteTargetTemp', value, completion = True, readback=True, tolerance=0.2))
+    cmds.append(Set('BL6:SE:QNTC1:SP1Set', value))
+    id = submitsmart(cmds, scantitle)
+    #while caget('BL6:SE:QNTC1:WriteTargetTemp') != caget('BL6:SE:QNTC1:ReadTargetTemp'):
+    #    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+def setpeltier2temp_mod(value):
+    scantitle = 'setpeltier2temp_mod('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    #cmds.append(Set('BL6:SE:QNTC2:WriteTargetTemp', value, completion = True, readback=True, tolerance=0.2))
+    cmds.append(Set('BL6:SE:QNTC2:SP1Set', value))
+    id = submitsmart(cmds, scantitle)
+    #while caget('BL6:SE:QNTC2:WriteTargetTemp') != caget('BL6:SE:QNTC2:ReadTargetTemp'):
+    #    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+
+def setrobottemp(value):
+    scantitle = 'setrobottemp('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:ARR:SetPoint', value, completion = True, readback=True, tolerance=0.2))
+    id = submitsmart(cmds, scantitle)
+    #while caget('BL6:SE:QNTC2:WriteTargetTemp') != caget('BL6:SE:QNTC2:ReadTargetTemp'):
+    #    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+
+    
+def reducescanrate_peltier():
+    import epics
+
+    # Define the PVs and their respective scan rates
+    commands = [
+        ("BL6:SE:QNTC1:ReadMaxStirrerSpeed.SCAN", "Passive"),
+        ("BL6:SE:QNTC2:ReadMaxStirrerSpeed.SCAN", "Passive"),
+        ("BL6:SE:QNTC1:ReadLowestStirrerSpeed.SCAN", "Passive"),
+        ("BL6:SE:QNTC2:ReadLowestStirrerSpeed.SCAN", "Passive"),
+        ("BL6:SE:QNTC1:ReadHolderID.SCAN", "Passive"),
+        ("BL6:SE:QNTC2:ReadHolderID.SCAN", "Passive"),
+        ("BL6:SE:QNTC1:ReadStirrerSpeed.SCAN", "Passive"),
+        ("BL6:SE:QNTC2:ReadStirrerSpeed.SCAN", "Passive"),
+        ("BL6:SE:QNTC1:ReadMaxTargetTemp.SCAN", "5 second"),
+        ("BL6:SE:QNTC2:ReadMaxTargetTemp.SCAN", "5 second"),
+        ("BL6:SE:QNTC1:ReadLowestTargetTemp.SCAN", "5 second"),
+        ("BL6:SE:QNTC2:ReadLowestTargetTemp.SCAN", "5 second"),
+        ("BL6:SE:QNTC1:ReadInstrumentStatus.SCAN", "5 second"),
+        ("BL6:SE:QNTC2:ReadInstrumentStatus.SCAN", "5 second"),
+        ("BL6:SE:QNTC1:ReadTempHolder.SCAN", "2 second"),
+        ("BL6:SE:QNTC2:ReadTempHolder.SCAN", "2 second"),
+        ("BL6:SE:QNTC1:ReadProbeTemperature.SCAN", "2 second"),
+        ("BL6:SE:QNTC2:ReadProbeTemperature.SCAN", "2 second"),
+        ("BL6:SE:QNTC1:ReadRampRate.SCAN", "5 second"),
+        ("BL6:SE:QNTC2:ReadRampRate.SCAN", "5 second"),
+        ("BL6:SE:QNTC1:ReadHighTempLimHeatExch.SCAN", "2 second"),
+        ("BL6:SE:QNTC2:ReadHighTempLimHeatExch.SCAN", "2 second"),
+        ("BL6:SE:QNTC1:ReadHeatExchTemp.SCAN", "2 second"),
+        ("BL6:SE:QNTC2:ReadHeatExchTemp.SCAN", "2 second"),
+    ]
+
+    # Loop over the commands and set each PV to the specified scan rate
+    for pv, scan_rate in commands:
+        result = epics.caput(pv, scan_rate)
+        if result:
+            print(f"Successfully set {pv} to {scan_rate}")
+        else:
+            print(f"Failed to set {pv} to {scan_rate}")
+
+def set_light_voltage(value):
+    scantitle = 'set_light_voltage('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:TDK:VoltSet', value, completion=False, readback=False))
+    if value > 0:
+        cmds.append(Set('BL6:SE:TDK:SetOutput', 1, completion=False, readback=False))
+    else:
+        cmds.append(Set('BL6:SE:TDK:SetOutput', 0, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan() 
+    
+def set_light_current(value):
+    scantitle = 'set_light_current('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:TDK:AmpsSet', value, completion=False, readback=False))
+    if value > 0:
+        cmds.append(Set('BL6:SE:TDK:SetOutput', 1, completion=False, readback=False))
+    else:
+        cmds.append(Set('BL6:SE:TDK:SetOutput', 0, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()   
+
+def set_light_arroyoTemp(value):
+    scantitle = 'setLightArroyoTemp('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:ARR:SetPoint', value, completion = True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()    
+    
+
+##################################
+# Added 3/13/2025 - GNagy
+# Rheometer double channel Chanel1
+def set_Channel1(value):
+    scantitle = 'set_Channel1('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:TFS1:WriteSetpoint', value, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+def set_Channel2(value):
+    scantitle = 'set_Channel2('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:PolyScience:SPWrite', value, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+##################################
+# Added 11/14/2025 - GNagy
+# syringe pump flow valve switch (Jeff Richards)
+def set_valveOpening(value):
+    # 0 closes the valve
+    # 1 opens the valve
+    scantitle = 'set_Channel1('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:GC:DO2', value, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+##################################
+       
+def set_monoWavelength(wl):
+    """
+    Set the wavelength value for the BL6:Chop:Skf16:MCWvlenReq PV.
+    
+    Parameters:
+    wl (float): The wavelength value to set (in Angstroms).
+    """
+    scantitle = f'set_wavelength({wl})'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle))
+    cmds.append(Set('BL6:Chop:Skf16:MCWvlenReq', wl, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def set_wavelength_spread(spread):
+    """
+    Value is in percentage
+    Set the wavelength spread value for the BL6:Chop:Skf16:MCWvlenSpreadReq PV.
+    
+    Parameters:
+    spread (float): The wavelength spread value to set (in Angstroms).
+    """
+    scantitle = f'set_wavelength_spread({spread})'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle))
+    cmds.append(Set('BL6:Chop:Skf16:MCWvlenSpreadReq', spread, completion=True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+    
+##################################
+# Added 04/22/2026 - GNagy
+# PACE pump for pressure control
+def set_pressure(value):
+    scantitle = 'setPACEpressure('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:PACE1:PressSet', value, completion = True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()    
+    
+def set_pressureRate(value):   #attention this is in bar/seconds, not as it is written in the CSS
+    scantitle = 'setP('+str(value) + ')'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:PACE1:Slew', value, completion = True))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()  
+
+def pump_stop():
+    scantitle = 'pump_stop()'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:PACE1:Control', 0, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()
+
+def pump_run():
+    scantitle = 'sc_setmanual()'
+    cmds.append(Set('BL6:CS:LineLog:Add', scantitle )) 
+    cmds.append(Set('BL6:SE:PACE1:Control', 1, completion=False, readback=False))
+    id = submitsmart(cmds, scantitle)
+    print(scantitle)
+    newscan()

@@ -1,0 +1,83 @@
+[
+  {
+    "logName": "daslogs.detectorz",
+    "friendlyName": "Sample-to-detector distance",
+    "description": "Position of the main detector along the beam. With wavelength and chopper frequency this defines the configuration a run belongs to.",
+    "units": "m",
+    "category": "geometry",
+    "scale": 0.001,
+    "aliases": ["detector distance", "detectorz", "sdd", "distance"]
+  },
+  {
+    "logName": "daslogs.wavelength",
+    "friendlyName": "Wavelength",
+    "description": "Mean neutron wavelength for the run. Part of the configuration identity; a mismatch against the run title is a known mislabelling case (protocol CAT-06).",
+    "units": "A",
+    "category": "beam",
+    "aliases": ["wavelength", "lambda", "angstrom"]
+  },
+  {
+    "logName": "daslogs.speed1",
+    "friendlyName": "Chopper frequency",
+    "description": "Disc chopper rotation speed. Rounds to the standard 30 Hz or 60 Hz when forming the configuration id.",
+    "units": "Hz",
+    "category": "chopper",
+    "aliases": ["chopper", "frequency", "speed", "hz"]
+  },
+  {
+    "logName": "proton_charge",
+    "friendlyName": "Proton charge",
+    "description": "Total proton charge accumulated over the run. Divided by duration it gives the average beam current actually delivered.",
+    "units": "pC",
+    "category": "beam",
+    "aliases": ["proton charge", "charge", "beam current", "pc"]
+  },
+  {
+    "logName": "daslogs.sampletemp",
+    "friendlyName": "Sample temperature",
+    "description": "Sample environment temperature reading for the run. The unit depends on the sample environment in use and is not recorded in the log, so the raw value is shown without one — check it against the environment before relying on it.",
+    "units": "",
+    "category": "sample-environment",
+    "aliases": ["temperature", "temp", "sample temp", "kelvin", "celsius"]
+  },
+  {
+    "logName": "daslogs.sample_aperture_diameter",
+    "friendlyName": "Sample aperture diameter",
+    "description": "Aperture at the sample position. Feeds the Q resolution calculation; the reduction default is 10 mm unless the experiment specifies otherwise.",
+    "units": "mm",
+    "category": "aperture",
+    "aliases": ["sample aperture", "aperture", "slit"]
+  },
+  {
+    "logName": "daslogs.source_aperture_diameter",
+    "friendlyName": "Source aperture diameter",
+    "description": "Aperture on the source side of the flight path, with the sample aperture setting the beam collimation.",
+    "units": "mm",
+    "category": "aperture",
+    "aliases": ["source aperture", "collimation"]
+  },
+  {
+    "logName": "daslogs.beamstop_diameter",
+    "friendlyName": "Beamstop diameter",
+    "description": "Beamstop blocking the direct beam at the detector. Too small for the configuration and the direct beam reaches the detector.",
+    "units": "mm",
+    "category": "geometry",
+    "aliases": ["beamstop", "beam stop"]
+  },
+  {
+    "logName": "total_counts",
+    "friendlyName": "Total counts",
+    "description": "Total detector counts recorded over the run.",
+    "units": "counts",
+    "category": "acquisition",
+    "aliases": ["counts", "total counts", "intensity"]
+  },
+  {
+    "logName": "duration",
+    "friendlyName": "Run duration",
+    "description": "Acquisition time for the run. A flood of a few seconds or a transmission of hours is usually an aborted or mislabelled measurement (protocol CAT-07).",
+    "units": "s",
+    "category": "acquisition",
+    "aliases": ["duration", "time", "length"]
+  }
+]

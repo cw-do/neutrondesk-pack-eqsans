@@ -1,0 +1,15 @@
+# Python IOC autosave file
+BL6:CS:QPlan:Comment 
+BL6:CS:QPlan:BSX 103
+BL6:CS:QPlan:S1s 3
+BL6:CS:QPlan:WLMin 10.0
+BL6:CS:QPlan:BSforQ 1
+BL6:CS:QPlan:S3s 4
+BL6:CS:QPlan:S2s 4
+BL6:CS:QPlan:Freq 1
+BL6:CS:QPlan:SampleDetDistance 8000.0
+BL6:CS:QPlan:S4 3.0
+BL6:CS:QPlan:BS90Ys 10.0
+BL6:CS:QPlan:BS30Ys 10.0
+BL6:CS:QPlan:BS60Ys 605
+<END>
