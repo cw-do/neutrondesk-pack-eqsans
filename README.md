@@ -41,6 +41,32 @@ Transmission (`_trans`) files carry `S1t`/`S2t`/`S3t` rather than `S1s`/`S2s`/`S
 so a Q-range computed from one has a beam diameter of 0. Q-range is always read
 off the `_scatt` member of a pair.
 
+## Code (`src/`)
+
+`src/index.ts` builds the six assistant tools over the pack's own data:
+`qrange_lookup`, `list_qrange_configs`, `list_scan_functions`,
+`lookup_scan_function`, `build_sample_script`, `build_temperature_script`.
+
+Two files are ports that must stay numerically and textually identical to their
+Python originals in `cw-do/eqsans-agent-for-ndesk`:
+
+- `qrange.ts` (`qrange.py`, itself from ESAC v2's `qrange_calculator.py`) matches
+  the instrument's own Q-Range Planner, including the beam-diameter quirk noted
+  in the source. Verified across all 106 configurations to floating-point
+  rounding.
+- `scriptgen.ts` (`scriptgen.py`, from ESAC v2's `script_builder.py`) renders
+  scripts character for character as the Python does, which is why it formats an
+  integral proton charge as `1.0`.
+
+Both feed real beam-time decisions. If you change either, re-run the comparison
+against the Python rather than trusting that it still matches. The model never
+writes a script; it supplies arguments and `scriptgen.ts` renders the text, so
+the empty-beam transmission run cannot be forgotten.
+
+`savConfigs.ts` parses the `.sav` files, `scanFunctions.ts` indexes the
+scan-function source by name and keyword, and `tools.ts` wires them into tool
+definitions.
+
 ## Guides
 
 The reduction guides follow the instrument team's own documentation at
