@@ -5,8 +5,9 @@ NeutronDesk instrument pack is. This README explains the pack from the top
 down: the layout every pack shares, the minimum a pack must contain, and then
 each folder of this pack, what is in it and why.
 
-A pack is one git repository holding everything one instrument brings to the
-[NeutronDesk](https://github.com/cw-do/neutrondesk) app: the assistant's rules
+A pack is one git repository holding everything one instrument brings to
+NeutronDesk, the ORNL neutron-experiment companion app (its own repository is
+private): the assistant's rules
 and reference knowledge, the guide library, the friendly names for its process
 variables, links, and optionally code for calculations the assistant should do
 deterministically. The instrument team owns it. The app vendors it at build
@@ -39,6 +40,7 @@ published with the check tool. A new pack starts from
   checks/
     cases.json              optional   questions and tool calls with what they must produce
     golden/*.json           optional   recorded outputs the check compares against
+    reference/**            optional   the same outputs produced by the code's original, for a port
 ```
 
 Where each part reaches the app:
