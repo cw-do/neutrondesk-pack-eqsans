@@ -2,11 +2,13 @@
 
 The EQ-SANS (BL-6, SNS) instrument pack: the assistant's rules and reference
 modules, the guide library, the curated process variables, the instrument's real
-scan-function source and Q-range planner configurations, and (once the pack has
-`src/`) the deterministic Q-range and script tools.
+scan-function source and Q-range planner configurations, and the deterministic
+Q-range and script tools in `src/`.
 
-The format is `docs/packs/format.md` in the NeutronDesk repository. This README
-covers only what is specific to EQ-SANS.
+This repository is vendored into the NeutronDesk app by `npm run packs:pull`. The
+pack format is [docs/packs/format.md](https://github.com/cw-do/neutrondesk/blob/main/docs/packs/format.md)
+in the app repository, and the checks a pack must pass are run by its
+`tools/pack-check`. This README covers only what is specific to EQ-SANS.
 
 ## Modules
 
