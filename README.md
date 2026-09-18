@@ -173,6 +173,13 @@ and the EPICS calls it makes.
 Kept as `.txt` so nothing tries to run or lint it. Refresh it by copying the
 file in again.
 
+The app does not read this file itself; it hands the split list to this pack's
+code, and `src/scanFunctions.ts` plus the `list_scan_functions` and
+`lookup_scan_function` tools in `src/tools.ts` are what answer from it. A pack
+without code gets nothing from such a file. Another instrument scripted the
+same way can copy those three pieces; one whose commands are not Python should
+describe them in a module instead.
+
 ### `guides/`
 
 Twelve documents users read on the Guides screen; the assistant retrieves them
