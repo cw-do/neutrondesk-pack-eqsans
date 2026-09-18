@@ -7,7 +7,7 @@
   "fullName": "Extended Q-Range Small-Angle Neutron Scattering Diffractometer",
   "beamline": "BL-6",
   "blurb": "Small-angle scattering, time-of-flight. Full NeutronDesk support.",
-  "capabilities": ["runs", "monitor", "detector", "pv", "guides", "agent", "reduction"],
+  "capabilities": ["runs", "monitor", "detector", "pv", "guides", "reduction"],
   "usesSansTitleConvention": true,
   "guides": {
     "order": [
@@ -50,7 +50,8 @@
       "How do I reduce this data?",
       "How do I set the peltier temperature?",
       "Why does every configuration need its own empty beam?"
-    ]
+    ],
+    "retrievalTerms": ["eqsans", "drtsans"]
   },
   "maintainers": [{ "name": "Changwoo Do", "email": "snseqsans@gmail.com" }]
 }

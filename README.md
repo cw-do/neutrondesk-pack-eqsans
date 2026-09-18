@@ -28,7 +28,7 @@ published with the check tool. A new pack starts from
   .gitattributes            recommended   * text=auto eol=lf
   package.json              recommended   npm test -> neutrondesk-pack-check
   agent/
-    system-prompt.md        REQUIRED if capabilities includes "agent"   the instrument's own rules
+    system-prompt.md        what tunes the assistant; without it the instrument gets the shared behaviour only
     modules/*.md            optional   reference knowledge, retrieved per question; one topic per file
     scan-functions.txt      optional   the instrument's scan-function source, split at each `def`
   guides/*.md               optional   documents on the Guides screen, also retrieved by the assistant
@@ -65,9 +65,11 @@ To pass `npm test` and be vendored, a pack needs:
    `fullName`, `beamline`, `blurb`, `capabilities`, `usesSansTitleConvention`,
    `guides.order`, `guides.categories`, `links`, `agent.suggestions`. The id is
    the only thing that links the pack to an instrument.
-2. **`agent/system-prompt.md`** of at least 200 characters if `capabilities`
-   includes `agent`. Only your beamline's rules; the app supplies the shared
-   ones (phone answering, no execution, the RSS refusal, catalogue use).
+2. **`agent/system-prompt.md`** of at least 200 characters, if the assistant is
+   to be tuned for the instrument (every instrument has the Ask assistant;
+   without a prompt it answers from the catalogue and the shared guides only).
+   Only your beamline's rules; the app supplies the shared ones (phone
+   answering, no execution, the RSS refusal, catalogue use).
 3. **Every guide in `guides/` listed in `guides.order`**, each with complete
    front matter and a `category` from `guides.categories`.
 4. **UTF-8, LF, text only**, 2 MB total, 256 KB per file, no `dependencies` in
@@ -90,11 +92,14 @@ makes Metadata searchable by concept, and `src/` adds exact calculations.
   "name": "EQSANS", "shortName": "EQ-SANS", "beamline": "BL-6",
   "fullName": "Extended Q-Range Small-Angle Neutron Scattering Diffractometer",
   "blurb": "Small-angle scattering, time-of-flight. Full NeutronDesk support.",
-  "capabilities": ["runs", "monitor", "detector", "pv", "guides", "agent", "reduction"],
+  "capabilities": ["runs", "monitor", "detector", "pv", "guides", "reduction"],
   "usesSansTitleConvention": true,      // run titles follow S-/T- naming, so the app classifies them
   "guides": { "order": [ /* 13 ids, screen order */ ], "categories": [ /* 6 */ ] },
   "links": [ /* the EQ-SANS user guide and instrument page */ ],
-  "agent": { "suggestions": [ /* 5 openers on the Ask screen */ ] },
+  "agent": {
+    "suggestions": [ /* 5 openers on the Ask screen */ ],
+    "retrievalTerms": ["eqsans", "drtsans"]   // words that mark a question as EQ-SANS's; added to the app's shared retrieval terms
+  },
   "maintainers": [ /* who to ask */ ]
 }
 ```
