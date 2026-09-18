@@ -164,9 +164,12 @@ and a question about it is answerable only through the lookup.
 
 ### `agent/scan-functions.txt`
 
-A copy of the instrument's live scan-function source, 107 functions. The app
-splits it at every top-level `def name(` so a question about one function
-returns that function's real signature, comments and the EPICS calls it makes.
+A copy of the instrument's live scan-function source: 105 distinct functions
+(two, `setnano1` and `setnano2`, are defined twice in the file; the app keeps
+the last definition of each, as the Python original's dict did, and the check
+warns about them). The app splits it at every top-level `def name(` so a
+question about one function returns that function's real signature, comments
+and the EPICS calls it makes.
 Kept as `.txt` so nothing tries to run or lint it. Refresh it by copying the
 file in again.
 
@@ -279,6 +282,12 @@ What `npm test` uses to check this pack against itself.
   the scan-function index, so a change to a constant shows up as a numeric
   diff rather than a vaguely different answer. `npm run golden` rewrites them;
   a person reads the diff and commits it. Never regenerate goldens in CI.
+- `reference/selfcheck.json`, `reference/make-reference.py`, `reference/README.md` —
+  the same enumeration produced by the original Python (`eqsans-agent-for-ndesk`
+  commit `1c5a201`). `npm test` (check H28) fails unless the TypeScript agrees
+  with it to 1e-12 on every configuration's Q-range, the function names and the
+  keyword searches. `labels` is not covered: label resolution is this pack's own
+  addition. This is the Python comparison the port promises, kept in the repository.
 
 ### `package.json`, `.gitattributes`, `LICENSE`
 
@@ -313,15 +322,11 @@ these differences. The guide is the rule; this pack is the older practice.
 - **`qrange_lookup` accepts labels** (`4m 2.5a`), which the Python's
   `_resolve_qrange_config` does not. Deliberate: the system prompt tells the
   model labels are fine.
-- **`list_scan_functions` returns 107 names, the Python 105.** The source
-  file defines `setnano1` and `setnano2` twice; the Python's dict keeps one
-  of each, the TypeScript list keeps both. Lookup by name behaves the same
-  (last definition wins in both). Open question whether the list should dedupe.
-- **No `checks/reference/` yet.** The Python comparison that verified the
-  Q-range port across all 106 configurations was run outside this repository;
-  a dry run with a fresh `make-reference.py` reproduced it (worst difference
-  1.1e-16) but its output is not committed here. Adding the reference is the
-  next change to this pack.
+- Two earlier deviations are resolved: the scan-function list once kept both
+  definitions of a duplicated name (the Python kept one; the app's loader now
+  folds them the same way, and names sort by code point as `sorted()` does),
+  and the Python comparison once lived outside the repository (it is now
+  `checks/reference/`, run by every `npm test`).
 - The file names `scanFunctions.ts` and `savConfigs.ts` do not mirror the
   Python module names; the guide now says names are free.
 
