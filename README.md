@@ -6,9 +6,9 @@ scan-function source and Q-range planner configurations, and the deterministic
 Q-range and script tools in `src/`.
 
 This repository is vendored into the NeutronDesk app by `npm run packs:pull`. The
-pack format is [docs/packs/format.md](https://github.com/cw-do/neutrondesk/blob/main/docs/packs/format.md)
-in the app repository, and the checks a pack must pass are run by its
-`tools/pack-check`. This README covers only what is specific to EQ-SANS.
+pack format is [FORMAT.md](https://github.com/cw-do/neutrondesk-pack-check/blob/main/FORMAT.md),
+published with the check tool, and `npm test` here runs that tool on this pack.
+A new pack starts from [neutrondesk-pack-template](https://github.com/cw-do/neutrondesk-pack-template). This README covers only what is specific to EQ-SANS.
 
 ## Modules
 

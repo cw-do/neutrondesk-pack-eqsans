@@ -1,0 +1,13 @@
+{
+  "name": "neutrondesk-pack-eqsans",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The EQ-SANS instrument pack for NeutronDesk.",
+  "scripts": {
+    "test": "neutrondesk-pack-check .",
+    "golden": "neutrondesk-pack-check . --write-golden"
+  },
+  "devDependencies": {
+    "neutrondesk-pack-check": "github:cw-do/neutrondesk-pack-check"
+  }
+}
