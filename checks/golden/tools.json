@@ -36,42 +36,6 @@
     }
   },
   {
-    "activityEmpty": "Listing the scan functions",
-    "schema": {
-      "function": {
-        "description": "List the names of every EQ-SANS scan function. Use before lookup_scan_function when you need to see what exists.",
-        "name": "list_scan_functions",
-        "parameters": {
-          "properties": {},
-          "type": "object"
-        }
-      },
-      "type": "function"
-    }
-  },
-  {
-    "activityEmpty": "Looking up the scan function",
-    "schema": {
-      "function": {
-        "description": "Get the exact source — signature, parameters, comments, the real EPICS/PV calls — of EQ-SANS scan functions, by name or by topic keyword. Use this for ANY question about what a function does, its parameters, or how to control something. Never guess a function name or signature.",
-        "name": "lookup_scan_function",
-        "parameters": {
-          "properties": {
-            "query": {
-              "description": "A function name ('setpeltier1temp') or a topic keyword ('peltier', 'transmission').",
-              "type": "string"
-            }
-          },
-          "required": [
-            "query"
-          ],
-          "type": "object"
-        }
-      },
-      "type": "function"
-    }
-  },
-  {
     "activityEmpty": "Building the scan script",
     "schema": {
       "function": {

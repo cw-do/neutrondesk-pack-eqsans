@@ -1,9 +1,10 @@
 /**
- * EQ-SANS tools: Q-range arithmetic, the scan-function reference, and the
- * deterministic script builders.
+ * EQ-SANS tools: Q-range arithmetic and the deterministic script builders.
+ * (The scan-function lookup tools are the app's own, built over this pack's
+ * agent/scan-functions.txt.)
  *
- * These are what makes the assistant more than a reader of documents — and all
- * three are specific to this beamline, which is why they live in the EQSANS
+ * These are what makes the assistant more than a reader of documents — and both
+ * are specific to this beamline, which is why they live in the EQSANS
  * pack rather than in the app. A Q-range formula from here applied at another
  * instrument would be confidently wrong.
  *
@@ -16,7 +17,6 @@ import type { PackApi, ToolDef } from 'neutrondesk-pack-api';
 
 import { calculateQRange, createQRange } from './qrange';
 import { parseSavConfigs } from './savConfigs';
-import { createScanFunctionIndex } from './scanFunctions';
 import {
   RACK_TYPES,
   buildSampleScript,
@@ -74,11 +74,10 @@ function parseSamples(args: Record<string, unknown>): SampleSpec[] {
   return out;
 }
 
-/** The six EQ-SANS tools, built over this pack's data. */
+/** The four EQ-SANS tools, built over this pack's data. */
 export function buildTools(api: PackApi): ToolDef[] {
   const { ok, fail, str, strArray, numArray } = api.tools;
   const qr = createQRange(parseSavConfigs(api.knowledge.data));
-  const sf = createScanFunctionIndex(api.knowledge.scanFunctions);
 
   /** Base configuration names present in the bundle, for label resolution. */
   function knownBases(): string[] {
@@ -149,64 +148,6 @@ export function buildTools(api: PackApi): ToolDef[] {
     },
     activity: () => 'Listing the instrument configurations',
     run: () => ok(knownBases().join('\n')),
-  };
-
-  // ---------------------------------------------------------------------------
-  // Scan functions
-  // ---------------------------------------------------------------------------
-
-  const listScanFunctions: ToolDef = {
-    schema: {
-      type: 'function',
-      function: {
-        name: 'list_scan_functions',
-        description:
-          'List the names of every EQ-SANS scan function. Use before lookup_scan_function when ' +
-          'you need to see what exists.',
-        parameters: { type: 'object', properties: {} },
-      },
-    },
-    activity: () => 'Listing the scan functions',
-    run: () => ok(sf.listFunctionNames().join('\n')),
-  };
-
-  const lookupScanFunction: ToolDef = {
-    schema: {
-      type: 'function',
-      function: {
-        name: 'lookup_scan_function',
-        description:
-          'Get the exact source — signature, parameters, comments, the real EPICS/PV calls — of ' +
-          'EQ-SANS scan functions, by name or by topic keyword. Use this for ANY question about ' +
-          'what a function does, its parameters, or how to control something. Never guess a ' +
-          'function name or signature.',
-        parameters: {
-          type: 'object',
-          properties: {
-            query: {
-              type: 'string',
-              description:
-                "A function name ('setpeltier1temp') or a topic keyword ('peltier', 'transmission').",
-            },
-          },
-          required: ['query'],
-        },
-      },
-    },
-    activity: (a) => `Looking up ${str(a, 'query') || 'the scan function'}`,
-    run: (args) => {
-      const query = str(args, 'query');
-      const exact = sf.getFunction(query);
-      if (exact) return ok(exact.body);
-      const matches = sf.searchFunctions(query);
-      if (matches.length === 0) {
-        return fail(
-          `No scan function matches "${query}". Call list_scan_functions to see all ` +
-            `${sf.listFunctionNames().length} names.`
-        );
-      }
-      return ok(matches.map((m) => `# ${m.name}\n${m.body}`).join('\n\n'));
-    },
   };
 
   // ---------------------------------------------------------------------------
@@ -343,8 +284,6 @@ export function buildTools(api: PackApi): ToolDef[] {
   return [
     qrangeLookup,
     listQRangeConfigs,
-    listScanFunctions,
-    lookupScanFunction,
     buildSampleScriptTool,
     buildTemperatureScriptTool,
   ];

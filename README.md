@@ -48,7 +48,7 @@ Where each part reaches the app:
 | `pack.json` | The instrument picker ("Full support", the blurb), the header, which screens exist, the Guides order, the links, the Ask openers |
 | `agent/system-prompt.md` | Spliced into the app's shared prompt template as this instrument's rules |
 | `agent/modules/*.md` | Scored against each question; the best few go into the model's context |
-| `agent/scan-functions.txt` | Looked up by name or keyword through a tool, never retrieved wholesale |
+| `agent/scan-functions.txt` | Two app-built tools (`list_scan_functions`, `lookup_scan_function`) that quote a function by name or keyword; never retrieved wholesale |
 | `guides/*.md` | The Guides screen, and retrieved alongside the modules |
 | `pv/catalogue.json` | Friendly names and explanations over a run's DAS logs (Run → Metadata) |
 | `data/**` | Given to `src/` as strings; the app does not read them |
@@ -173,12 +173,11 @@ and the EPICS calls it makes.
 Kept as `.txt` so nothing tries to run or lint it. Refresh it by copying the
 file in again.
 
-The app does not read this file itself; it hands the split list to this pack's
-code, and `src/scanFunctions.ts` plus the `list_scan_functions` and
-`lookup_scan_function` tools in `src/tools.ts` are what answer from it. A pack
-without code gets nothing from such a file. Another instrument scripted the
-same way can copy those three pieces; one whose commands are not Python should
-describe them in a module instead.
+The app builds the `list_scan_functions` and `lookup_scan_function` tools over
+this file itself, so any pack with a scan-function source gets them without
+code; their descriptions name the instrument. The two names are reserved for
+the app. Between the app's split and the `.txt` copy, nothing in this pack's
+`src/` touches scan functions any more.
 
 ### `guides/`
 
@@ -231,22 +230,22 @@ pack's business.
 
 The code pack part. `src/index.ts` default-exports a factory; the app calls it
 once, handing over the pack's own knowledge (`api.knowledge.modules`,
-`.scanFunctions`, `.data`) and the tool-result helpers, and gets back the six
-tools:
+`.scanFunctions`, `.data`) and the tool-result helpers, and gets back the four
+tools below. (The assistant also has `list_scan_functions` and
+`lookup_scan_function`, built by the app over `agent/scan-functions.txt`, and
+the three catalogue tools every instrument has.)
 
 | Tool | What it does |
 |---|---|
 | `qrange_lookup` | Q-range, wavelength range, TOF range and beam diameter for a configuration, by exact name or a label like `4m 2.5a` |
 | `list_qrange_configs` | Every configuration name the bundle has |
-| `list_scan_functions` | Every scan-function name |
-| `lookup_scan_function` | A function's real source, by name or keyword |
 | `build_sample_script` | A complete measurement script for samples across configurations; adds the empty-beam run itself |
 | `build_temperature_script` | A temperature-series script with the chiller guard and equilibration delays |
 
 Files:
 
 - `index.ts` — the factory, named exports for checks, and `selfCheck()`.
-- `tools.ts` — the six tool definitions: JSON Schema, the activity line shown
+- `tools.ts` — the four tool definitions: JSON Schema, the activity line shown
   while a tool runs, and `run()`.
 - `qrange.ts` — the Q-range arithmetic. A port of `cw-do/eqsans-agent-for-ndesk`
   `qrange.py`, itself from ESAC v2, matching the instrument's own Q-Range
@@ -254,7 +253,6 @@ Files:
   across all 106 configurations to floating-point rounding.
 - `scriptgen.ts` — the script renderer. A port of `scriptgen.py`, character
   for character, which is why an integral proton charge is written `1.0`.
-- `scanFunctions.ts` — the name and keyword index over the scan functions.
 - `savConfigs.ts` — the `.sav` parser.
 
 Two rules this code follows, and any pack code should:
@@ -280,20 +278,19 @@ What `npm test` uses to check this pack against itself.
 
 - `cases.json` — nine retrieval cases (a question and the module or guide it
   must reach, or a word the retrieved text must contain) and eighteen tool
-  runs (a tool, its arguments, and strings the result must and must not
-  contain: the empty-beam run is present, the scattering block comes after
+  runs against the pack's tools and the app-built scan-function tools (a tool,
+  its arguments, and strings the result must and must not contain: the empty-beam run is present, the scattering block comes after
   transmission, the chiller guard appears for a peltier series, a nonsense
   configuration is refused).
 - `golden/tools.json`, `golden/toolruns.json`, `golden/selfcheck.json` —
-  recorded outputs. `selfcheck.json` holds every configuration's Q-range and
-  the scan-function index, so a change to a constant shows up as a numeric
-  diff rather than a vaguely different answer. `npm run golden` rewrites them;
+  recorded outputs. `selfcheck.json` holds every configuration's Q-range, so a
+  change to a constant shows up as a numeric diff rather than a vaguely
+  different answer. `npm run golden` rewrites them;
   a person reads the diff and commits it. Never regenerate goldens in CI.
 - `reference/selfcheck.json`, `reference/make-reference.py`, `reference/README.md` —
   the same enumeration produced by the original Python (`eqsans-agent-for-ndesk`
   commit `1c5a201`). `npm test` (check H28) fails unless the TypeScript agrees
-  with it to 1e-12 on every configuration's Q-range, the function names and the
-  keyword searches. `labels` is not covered: label resolution is this pack's own
+  with it to 1e-12 on every configuration's Q-range. `labels` is not covered: label resolution is this pack's own
   addition. This is the Python comparison the port promises, kept in the repository.
 
 ### `package.json`, `.gitattributes`, `LICENSE`
@@ -330,12 +327,12 @@ these differences. The guide is the rule; this pack is the older practice.
   `_resolve_qrange_config` does not. Deliberate: the system prompt tells the
   model labels are fine.
 - Two earlier deviations are resolved: the scan-function list once kept both
-  definitions of a duplicated name (the Python kept one; the app's loader now
-  folds them the same way, and names sort by code point as `sorted()` does),
-  and the Python comparison once lived outside the repository (it is now
-  `checks/reference/`, run by every `npm test`).
-- The file names `scanFunctions.ts` and `savConfigs.ts` do not mirror the
-  Python module names; the guide now says names are free.
+  definitions of a duplicated name (the Python kept one; the app now folds
+  them the same way and provides the lookup tools itself), and the Python
+  comparison once lived outside the repository (it is now `checks/reference/`,
+  run by every `npm test`).
+- The file name `savConfigs.ts` does not mirror the Python module name; the
+  guide now says names are free.
 
 ## 6. Where this came from
 
