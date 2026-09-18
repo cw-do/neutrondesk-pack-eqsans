@@ -1,0 +1,31 @@
+Copyright (c) 2026 Changwoo Do. All rights reserved.
+
+This repository is the EQ-SANS instrument pack for NeutronDesk. It is published
+so that NeutronDesk can vendor it at build time and so that instrument teams can
+see what a pack looks like.
+
+No license or right is granted to any person to use, copy, modify, adapt,
+translate, merge, publish, distribute, sublicense, sell, rent, lease, lend, or
+create derivative works from these files, in whole or in part, except as part
+of a NeutronDesk build made by or for the copyright holder, or with the prior
+written permission of the copyright holder.
+
+Nothing in this notice limits any right that cannot be excluded under
+applicable law.
+
+THIRD-PARTY CONTENT
+
+The reference modules derive from ESAC v2 and the guides from cw-do/eqsanscli;
+the scan-function source and Q-range planner configurations are copies of
+instrument files from EQ-SANS. They remain the property of their respective
+authors and are included here for the purpose above only.
+
+NO WARRANTY
+
+THIS CONTENT IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY ARISING FROM ITS USE. NOTHING HERE IS A SUBSTITUTE
+FOR THE INSTRUMENT'S OWN DOCUMENTATION OR ITS INSTRUMENT SCIENTISTS.
+
+NeutronDesk is a personal project. It is not an official product of ORNL, SNS
+or HFIR, and is not affiliated with, endorsed by, or supported by them.
