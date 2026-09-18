@@ -35,7 +35,7 @@
   },
   {
     "args": {},
-    "content": "beamslit1\nbeamslit2\nbeamslit3\nbeamslit4\nbeamstopX\nbeamstopY30\nbeamstopY60\nbeamstopY90\nchopperfreq\ncloseShutter\ndelay\nestimatetime\nestimatetimefs\nestimatetimeold\ngetfuncname\nloadconf\nmaghscanup\nmovebeamslit1\nmovedetector\nmovemask\nmoveroth\nmovetransx\nmovetransz\nnewscan\nopenShutter\noutletswitch\npsylo_compression_step\npsylo_rotccw\npsylo_rotcw\npsylo_stop\npsylo_tension_step\npump_run\npump_stop\nreadpv\nreducescanrate_peltier\nresettime\nrheotrigger\nrotate_cryob\nrotate_gi_phi\nrotate_gi_psi\nrotate_gi_theta\nrr_load\nrr_unload\nruncryostat\nrunfurnace\nrunfurnaceid\nrunrobotid\nrunrobotid2\nrunsample\nrunsampleid\nrunteledynepump\nsc_setcycle\nsc_setmanual\nsc_setspeed\nsc_stop\nset_amp_wait\nset_Channel1\nset_Channel2\nset_chopper_delay\nset_choppers_auto\nset_cryostat_sample\nset_cryostat_sample_wait\nset_cryostat_vti\nset_cryostat_vti_wait\nset_field\nset_field_wait\nset_freq_wait\nset_furnace_ramprate\nset_furnace_temp\nset_light_arroyoTemp\nset_light_current\nset_light_voltage\nset_monoWavelength\nset_polysci_temp\nset_pressure\nset_pressureRate\nset_tensileg_gap\nset_tensileg_move\nset_valveOpening\nset_wavelength_spread\nsetfurnacetemp\nsethaaketemp\nsethtfurnacetemp\nsetipts\nsetitems\nsetnano1\nsetnano1\nsetnano2\nsetnano2\nsetpeltier1temp\nsetpeltier1temp_mod\nsetpeltier2temp\nsetpeltier2temp_mod\nsetpv\nsetrobottemp\nsetruntitle\nsetteledynepressure\nsettumblertemp\nsetWL\nsimulatethis\nstart\nstop\nstopteledynepump\nsubmit\nsubmitsmart\ntumbler\nwaitPC",
+    "content": "beamslit1\nbeamslit2\nbeamslit3\nbeamslit4\nbeamstopX\nbeamstopY30\nbeamstopY60\nbeamstopY90\nchopperfreq\ncloseShutter\ndelay\nestimatetime\nestimatetimefs\nestimatetimeold\ngetfuncname\nloadconf\nmaghscanup\nmovebeamslit1\nmovedetector\nmovemask\nmoveroth\nmovetransx\nmovetransz\nnewscan\nopenShutter\noutletswitch\npsylo_compression_step\npsylo_rotccw\npsylo_rotcw\npsylo_stop\npsylo_tension_step\npump_run\npump_stop\nreadpv\nreducescanrate_peltier\nresettime\nrheotrigger\nrotate_cryob\nrotate_gi_phi\nrotate_gi_psi\nrotate_gi_theta\nrr_load\nrr_unload\nruncryostat\nrunfurnace\nrunfurnaceid\nrunrobotid\nrunrobotid2\nrunsample\nrunsampleid\nrunteledynepump\nsc_setcycle\nsc_setmanual\nsc_setspeed\nsc_stop\nsetWL\nset_Channel1\nset_Channel2\nset_amp_wait\nset_chopper_delay\nset_choppers_auto\nset_cryostat_sample\nset_cryostat_sample_wait\nset_cryostat_vti\nset_cryostat_vti_wait\nset_field\nset_field_wait\nset_freq_wait\nset_furnace_ramprate\nset_furnace_temp\nset_light_arroyoTemp\nset_light_current\nset_light_voltage\nset_monoWavelength\nset_polysci_temp\nset_pressure\nset_pressureRate\nset_tensileg_gap\nset_tensileg_move\nset_valveOpening\nset_wavelength_spread\nsetfurnacetemp\nsethaaketemp\nsethtfurnacetemp\nsetipts\nsetitems\nsetnano1\nsetnano2\nsetpeltier1temp\nsetpeltier1temp_mod\nsetpeltier2temp\nsetpeltier2temp_mod\nsetpv\nsetrobottemp\nsetruntitle\nsetteledynepressure\nsettumblertemp\nsimulatethis\nstart\nstop\nstopteledynepump\nsubmit\nsubmitsmart\ntumbler\nwaitPC",
     "id": "list-functions",
     "ok": true,
     "tool": "list_scan_functions"
@@ -71,7 +71,7 @@
     "args": {
       "query": "zzzqqq"
     },
-    "content": "No scan function matches \"zzzqqq\". Call list_scan_functions to see all 107 names.",
+    "content": "No scan function matches \"zzzqqq\". Call list_scan_functions to see all 105 names.",
     "id": "lookup-none",
     "ok": false,
     "tool": "lookup_scan_function"

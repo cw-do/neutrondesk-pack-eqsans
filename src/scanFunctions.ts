@@ -20,7 +20,7 @@ import type { ScanFunction } from 'neutrondesk-pack-api';
 export function createScanFunctionIndex(fns: readonly ScanFunction[]) {
   const byName = new Map(fns.map((f) => [f.name.toLowerCase(), f]));
 
-  const listFunctionNames = (): string[] => fns.map((f) => f.name).sort((a, b) => a.localeCompare(b));
+  const listFunctionNames = (): string[] => fns.map((f) => f.name).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 
   /** Exact, case-insensitive name lookup. */
   const getFunction = (name: string): ScanFunction | null => byName.get(name.trim().toLowerCase()) ?? null;
@@ -48,7 +48,7 @@ export function createScanFunctionIndex(fns: readonly ScanFunction[]) {
       if (score > 0) scored.push({ score, fn });
     }
 
-    scored.sort((a, b) => b.score - a.score || a.fn.name.localeCompare(b.fn.name));
+    scored.sort((a, b) => b.score - a.score || (a.fn.name < b.fn.name ? -1 : a.fn.name > b.fn.name ? 1 : 0));
     return scored.slice(0, limit).map((s) => s.fn);
   };
 
