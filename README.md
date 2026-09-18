@@ -297,30 +297,31 @@ commit, runs the check again, vendors the pack, and records the commit in
 `packs.lock`; the pack ships in the next app build. Nothing under the app's
 `packs/eqsans/` is edited by hand.
 
-## 6. Where this pack deviates from the conversion guide
+## 5. Where this pack deviates from the conversion guide
 
-This pack was converted from  before the template's
- existed, and a dry run of that guide against the same source found
+This pack was converted from `eqsans-agent-for-ndesk` before the template's
+`AGENTS.md` existed, and a dry run of that guide against the same source found
 these differences. The guide is the rule; this pack is the older practice.
 
 - **The system prompt is paraphrased and rewrapped**, not moved sentence by
   sentence. Same six sections, same removals, different wording.
-- ** accepts labels** (), which the Python's
-   does not. Deliberate: the system prompt tells the
+- **`qrange_lookup` accepts labels** (`4m 2.5a`), which the Python's
+  `_resolve_qrange_config` does not. Deliberate: the system prompt tells the
   model labels are fine.
-- ** returns 107 names, the Python 105.** The source
-  file defines  and  twice; the Python's dict keeps one
+- **`list_scan_functions` returns 107 names, the Python 105.** The source
+  file defines `setnano1` and `setnano2` twice; the Python's dict keeps one
   of each, the TypeScript list keeps both. Lookup by name behaves the same
   (last definition wins in both). Open question whether the list should dedupe.
-- **No  yet.** The Python comparison that verified the
+- **No `checks/reference/` yet.** The Python comparison that verified the
   Q-range port across all 106 configurations was run outside this repository;
-  a dry run with a fresh  reproduced it (worst difference
+  a dry run with a fresh `make-reference.py` reproduced it (worst difference
   1.1e-16) but its output is not committed here. Adding the reference is the
   next change to this pack.
-- The file names  and  do not mirror the
+- The file names `scanFunctions.ts` and `savConfigs.ts` do not mirror the
   Python module names; the guide now says names are free.
 
-## 7. Where this came from
+## 6. Where this came from
+
 
 Ported from `cw-do/eqsans-agent-for-ndesk`, whose corpus in turn came from
 ESAC v2. The guides come from `cw-do/eqsanscli`'s `knowledge/*.md`. Before this
