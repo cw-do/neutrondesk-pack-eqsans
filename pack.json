@@ -7,8 +7,35 @@
   "fullName": "Extended Q-Range Small-Angle Neutron Scattering Diffractometer",
   "beamline": "BL-6",
   "blurb": "Small-angle scattering, time-of-flight. Full NeutronDesk support.",
-  "capabilities": ["runs", "monitor", "detector", "pv", "guides", "reduction"],
+  "capabilities": [
+    "runs",
+    "monitor",
+    "detector",
+    "pv",
+    "guides",
+    "reduction"
+  ],
   "usesSansTitleConvention": true,
+  "runs": {
+    "summary": [
+      {
+        "log": "daslogs.detectorz",
+        "label": "Detector"
+      },
+      {
+        "log": "daslogs.wavelength",
+        "label": "Wavelength"
+      },
+      {
+        "log": "daslogs.speed1",
+        "label": "Chopper"
+      }
+    ],
+    "configuration": {
+      "label": "Configuration",
+      "scheme": "sans-distance-wavelength-frequency"
+    }
+  },
   "guides": {
     "order": [
       "eqsans-overview",
@@ -25,7 +52,14 @@
       "sansdir",
       "troubleshooting"
     ],
-    "categories": ["experiment", "reduction", "data-access", "eqsanscli", "sansdir", "troubleshooting"]
+    "categories": [
+      "experiment",
+      "reduction",
+      "data-access",
+      "eqsanscli",
+      "sansdir",
+      "troubleshooting"
+    ]
   },
   "links": [
     {
@@ -51,7 +85,15 @@
       "How do I set the peltier temperature?",
       "Why does every configuration need its own empty beam?"
     ],
-    "retrievalTerms": ["eqsans", "drtsans"]
+    "retrievalTerms": [
+      "eqsans",
+      "drtsans"
+    ]
   },
-  "maintainers": [{ "name": "Changwoo Do", "email": "snseqsans@gmail.com" }]
+  "maintainers": [
+    {
+      "name": "Changwoo Do",
+      "email": "snseqsans@gmail.com"
+    }
+  ]
 }
